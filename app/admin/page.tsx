@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { supabase, uploadImage } from '@/lib/supabase';
 import type { Trustee, Leader, EventItem, NewsItem, Programme } from '@/types/content';
 
@@ -226,9 +227,9 @@ export default function AdminPage() {
                 </div>
               </div>
               <AdminTable
-                headings={['Name', 'Position']}
+                headings={['Image', 'Name', 'Position']}
                 emptyText="No leaders added yet."
-                rows={leaders.map((item) => [item.name, item.position])}
+                rows={leaders.map((item) => [<AdminImage key={`${item.name}-image`} image={item.image} name={item.name} />, item.name, item.position])}
               />
             </section>
 
@@ -354,7 +355,11 @@ export default function AdminPage() {
   );
 }
 
-function AdminTable({ headings, rows, emptyText, badgeColumn }: { headings: string[]; rows: string[][]; emptyText: string; badgeColumn?: number }) {
+function AdminImage({ image, name }: { image?: string; name: string }) {
+  return <img className="admin-table-image" src={image || '/images/Logo.jpg'} alt={name} />;
+}
+
+function AdminTable({ headings, rows, emptyText, badgeColumn }: { headings: string[]; rows: ReactNode[][]; emptyText: string; badgeColumn?: number }) {
   if (!rows.length) {
     return <div className="empty-state">{emptyText}</div>;
   }
@@ -371,9 +376,9 @@ function AdminTable({ headings, rows, emptyText, badgeColumn }: { headings: stri
         </thead>
         <tbody>
           {rows.map((row, rowIndex) => (
-            <tr key={`${row[0]}-${rowIndex}`}>
+            <tr key={rowIndex}>
               {row.map((cell, cellIndex) => (
-                <td key={`${cell}-${cellIndex}`}>
+                <td key={`${rowIndex}-${cellIndex}`}>
                   {badgeColumn === cellIndex ? <span className="table-badge">{cell || 'Update'}</span> : cell || 'Not set'}
                 </td>
               ))}

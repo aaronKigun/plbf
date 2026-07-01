@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import HeroSection from '@/components/HeroSection';
 import Navbar from '@/components/Navbar';
 import SectionGrid from '@/components/SectionGrid';
+import LeadershipSection from '@/components/LeadershipSection';
 import MembershipSection from '@/components/MembershipSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
@@ -43,6 +44,12 @@ export default function HomePage() {
     { name: 'Barr. I. S. Dalyop', position: 'Secretary', bio: 'Coordinating policy, engagement, and administration.' }
   ];
 
+  const fallbackLeaders = [
+    { name: 'Barr. Chambers C. Dabwan', position: 'Chairman', image: '/images/chairman.png' },
+    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', image: '/images/Logo.jpg' },
+    { name: 'Barr. I. S. Dalyop', position: 'Secretary', image: '/images/Logo.jpg' }
+  ];
+
   const fallbackProgrammes = [
     { title: 'Legal Aid Outreach', description: 'Community legal support and citizen empowerment.' },
     { title: 'Judicial Reform', description: 'Advocacy for transparency and accessible justice.' },
@@ -71,7 +78,7 @@ export default function HomePage() {
   ];
 
   const displayTrustees = trustees.length ? trustees : fallbackTrustees;
-  const displayLeaders = leaders.length ? leaders : fallbackNews;
+  const displayLeaders = leaders.length ? leaders : fallbackLeaders;
   const displayEvents = events.length ? events : fallbackEvents;
   const displayNews = news.length ? news : fallbackNews;
   const displayProgrammes = programmes.length ? programmes : fallbackProgrammes;
@@ -87,7 +94,10 @@ export default function HomePage() {
         />
 
         <section id="about" className="section">
-          <h2>About Us</h2>
+          <div className="section-heading">
+            <span className="section-eyebrow">About Us</span>
+            <h2>Upholding the Integrity of the Legal Profession</h2>
+          </div>
           <p>
             PLBF is a non-partisan association of legal practitioners working to promote professional excellence, legal education, and public welfare.
           </p>
@@ -99,36 +109,54 @@ export default function HomePage() {
         </section>
 
         <section id="governance">
-          <SectionGrid title="Governance" items={governanceItems} />
+          <SectionGrid
+            title="Governance"
+            eyebrow="Foundation"
+            intro="The policies, standards, and working structures that guide the Forum's service to members and the public."
+            items={governanceItems}
+          />
         </section>
         <section id="trustees">
-          <SectionGrid title="Trustees" items={displayTrustees.map((item) => ({ title: item.name, subtitle: item.position, description: item.bio || 'Community leadership and legal service.' }))} alt />
+          <SectionGrid
+            title="Board of Trustees"
+            eyebrow="Pillar of Guidance"
+            intro="Distinguished senior members who provide strategic direction, wisdom, and steadfast support to the Forum."
+            items={displayTrustees.map((item) => ({ title: item.name, subtitle: item.position, description: item.bio || 'Community leadership and legal service.' }))}
+            tone="dark"
+          />
         </section>
         <section id="services">
-          <SectionGrid title="Programmes" items={displayProgrammes.map((item) => ({ title: item.title, description: item.description }))} />
+          <SectionGrid
+            title="Our Mandate & Programmes"
+            eyebrow="What We Do"
+            intro="Through structured programmes and sustained advocacy, we work to elevate legal practice and make justice more accessible."
+            items={displayProgrammes.map((item) => ({ title: item.title, description: item.description }))}
+          />
         </section>
         <section id="events">
-          <SectionGrid title="Events" items={displayEvents.map((item) => ({ title: item.title, subtitle: item.date, description: item.description || 'Upcoming event' }))} alt />
+          <SectionGrid
+            title="Events"
+            eyebrow="Upcoming & Recent"
+            intro="Forums, clinics, meetings, and professional gatherings that keep the PLBF community connected."
+            items={displayEvents.map((item) => ({ title: item.title, subtitle: item.date, description: item.description || 'Upcoming event' }))}
+            tone="white"
+          />
         </section>
-        <section id="executives">
-          <SectionGrid title="Leadership" items={displayLeaders.map((item) => {
-            const entry = item as Leader & { title?: string; category?: string; excerpt?: string; bio?: string; position?: string };
-            return {
-              title: entry.name || entry.title || 'Leadership Update',
-              subtitle: entry.position || entry.category || 'Leadership',
-              description: entry.bio || entry.excerpt || 'Committed to advancing justice and public service.'
-            };
-          })} />
-        </section>
+        <LeadershipSection leaders={displayLeaders} />
         <section id="news-updates">
-          <SectionGrid title="News & Updates" items={displayNews.map((item) => {
-            const entry = item as NewsItem & { category?: string; excerpt?: string; content?: string };
-            return {
-              title: entry.title,
-              subtitle: entry.category || 'Update',
-              description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
-            };
-          })} alt />
+          <SectionGrid
+            title="News & Updates"
+            eyebrow="Latest"
+            intro="Announcements, reports, and updates from the Plateau Lawyers Bar Forum."
+            items={displayNews.map((item) => {
+              const entry = item as NewsItem & { category?: string; excerpt?: string; content?: string };
+              return {
+                title: entry.title,
+                subtitle: entry.category || 'Update',
+                description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
+              };
+            })}
+          />
         </section>
         <MembershipSection />
         <ContactSection />
