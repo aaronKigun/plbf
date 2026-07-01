@@ -20,20 +20,33 @@ export default function AdminPage() {
 
   const loadData = async () => {
     setLoading(true);
-    const [{ data: trusteesData }, { data: leadersData }, { data: eventsData }, { data: newsData }, { data: programmesData }] = await Promise.all([
-      supabase.from('trustees').select('*').order('display_order', { ascending: true }),
-      supabase.from('leaders').select('*').order('display_order', { ascending: true }),
-      supabase.from('events').select('*').order('date', { ascending: false }),
-      supabase.from('news').select('*').order('date', { ascending: false }),
-      supabase.from('programmes').select('*')
-    ]);
+    try {
+      const [{ data: trusteesData, error: trusteesError }, { data: leadersData, error: leadersError }, { data: eventsData, error: eventsError }, { data: newsData, error: newsError }, { data: programmesData, error: programmesError }] = await Promise.all([
+        supabase.from('trustees').select('*').order('display_order', { ascending: true }),
+        supabase.from('leaders').select('*').order('display_order', { ascending: true }),
+        supabase.from('events').select('*').order('date', { ascending: false }),
+        supabase.from('news').select('*').order('date', { ascending: false }),
+        supabase.from('programmes').select('*')
+      ]);
 
-    setTrustees((trusteesData as Trustee[]) || []);
-    setLeaders((leadersData as Leader[]) || []);
-    setEvents((eventsData as EventItem[]) || []);
-    setNews((newsData as NewsItem[]) || []);
-    setProgrammes((programmesData as Programme[]) || []);
-    setLoading(false);
+      if (trusteesError || leadersError || eventsError || newsError || programmesError) {
+        throw new Error('Unable to load data from Supabase');
+      }
+
+      setTrustees((trusteesData as Trustee[]) || []);
+      setLeaders((leadersData as Leader[]) || []);
+      setEvents((eventsData as EventItem[]) || []);
+      setNews((newsData as NewsItem[]) || []);
+      setProgrammes((programmesData as Programme[]) || []);
+    } catch {
+      setTrustees([]);
+      setLeaders([]);
+      setEvents([]);
+      setNews([]);
+      setProgrammes([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
