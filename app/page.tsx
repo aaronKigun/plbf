@@ -61,6 +61,15 @@ export default function HomePage() {
     { title: 'Panel Discussion on Access to Justice', category: 'Event', excerpt: 'A forthcoming conversation on building fairer legal systems.' }
   ];
 
+  const governanceItems = [
+    { title: 'Constitution', description: 'The forum’s constitution provides governance principles, membership rules, and operational structure.' },
+    { title: 'Code of Conduct', description: 'Professional standards, ethical duties, and disciplinary procedures for members.' },
+    { title: 'Membership Criteria', description: 'Eligibility requirements, admission process, and membership benefits for legal practitioners.' },
+    { title: 'Continuing Legal Education', description: 'Professional development, training programmes, and mentorship for bar members.' },
+    { title: 'Committees & Working Groups', description: 'Governance, finance, events, and public outreach bodies that steer forum activity.' },
+    { title: 'Annual Report', description: 'Yearly performance, impact summaries, and strategic priorities for the forum.' }
+  ];
+
   const displayTrustees = trustees.length ? trustees : fallbackTrustees;
   const displayLeaders = leaders.length ? leaders : fallbackNews;
   const displayEvents = events.length ? events : fallbackEvents;
@@ -89,6 +98,9 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section id="governance">
+          <SectionGrid title="Governance" items={governanceItems} />
+        </section>
         <section id="trustees">
           <SectionGrid title="Trustees" items={displayTrustees.map((item) => ({ title: item.name, subtitle: item.position, description: item.bio || 'Community leadership and legal service.' }))} alt />
         </section>

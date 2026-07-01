@@ -11,10 +11,18 @@ body { margin: 0; padding: 0; }
 a { text-decoration: none; color: inherit; }
 main { min-height: 100vh; }
 .navbar { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); border-bottom: 1px solid #eee; }
-.navbar-inner { max-width: 1200px; margin: 0 auto; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
-.brand { font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+.navbar-inner { max-width: 1200px; margin: 0 auto; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #0d1635; }
+.brand-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
 .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
-.nav-links a { font-size: 0.9rem; color: #4b5563; }
+.nav-links a { font-size: 0.95rem; color: #4b5563; }
+.footer { background: #0d1635; color: white; padding: 3.5rem 1.25rem; margin-top: 2rem; }
+.footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; align-items: flex-start; }
+.footer-brand { display: flex; gap: 1rem; align-items: center; max-width: 50%; }
+.footer-logo { width: 60px; height: 60px; border-radius: 18px; object-fit: cover; box-shadow: 0 16px 30px rgba(0,0,0,0.25); }
+.footer h3, .footer h4 { margin: 0 0 0.75rem; }
+.footer a { display: block; color: #d1d5db; margin-top: 0.4rem; }
+.footer-large { padding-bottom: 4rem; }
 .hero { position: relative; padding: 6rem 2rem 5rem; background: linear-gradient(135deg, #0d1635, #1f2f63); color: white; overflow: hidden; }
 .hero-overlay { position: absolute; inset: 0; background: url('/images/gavel.jpg') center/cover no-repeat; opacity: 0.2; animation: drift 14s ease-in-out infinite alternate; }
 .hero-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; display: grid; gap: 2rem; grid-template-columns: 1.1fr 0.9fr; align-items: center; }
