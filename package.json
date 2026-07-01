@@ -1,0 +1,23 @@
+{
+  "name": "plbf-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PLBF website and admin dashboard",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.45.3",
+    "next": "14.2.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.15",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.1",
+    "typescript": "5.5.4"
+  }
+}

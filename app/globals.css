@@ -1,0 +1,24 @@
+:root {
+  color-scheme: light;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f7f5ef;
+  color: #1f2937;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0; }
+a { text-decoration: none; }
+main { min-height: 100vh; }
+.hero { padding: 5rem 2rem; background: linear-gradient(135deg, #0d1635, #1f2f63); color: white; }
+.hero-content { max-width: 900px; margin: 0 auto; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.2em; color: #c5a059; font-size: 0.9rem; }
+.hero h1 { font-size: 3rem; margin: 0.5rem 0 1rem; }
+.hero-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+.btn { display: inline-block; padding: 0.8rem 1.2rem; border-radius: 999px; font-weight: 600; }
+.btn-dark { background: #fff; color: #0d1635; }
+.btn-gold { background: #c5a059; color: #111827; }
+.section { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-alt { background: #fff; }
+.card-grid { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: #fff; border: 1px solid #ece7dc; border-radius: 14px; padding: 1.2rem; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
+.muted { color: #6b7280; }
