@@ -1,0 +1,508 @@
+/* ============================================
+   PLATEAU LAWYERS BAR FORUM — Stylesheet
+   ============================================ */
+
+/* ── Base / Reset ─────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Animations ───────────────────────────── */
+@keyframes fadein {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadein {
+  animation: fadein 1s ease-out forwards;
+}
+.animate-fadein-delay-1 {
+  animation: fadein 1s ease-out 0.15s forwards;
+  opacity: 0;
+}
+.animate-fadein-delay-2 {
+  animation: fadein 1s ease-out 0.3s forwards;
+  opacity: 0;
+}
+.animate-fadein-delay-3 {
+  animation: fadein 1s ease-out 0.45s forwards;
+  opacity: 0;
+}
+
+/* ── Mobile Menu ────────────────────────────
+.mobile-menu {
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-menu.open {
+  transform: translateX(0);
+} */
+
+/* ── Toast Notification ───────────────────── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  padding: 1rem 1.5rem;
+  border-radius: 2px;
+  background: #2A2A2A;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  max-width: 360px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── Back to Top ──────────────────────────── */
+#backToTop {
+  transition: opacity 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Scroll Reveal ────────────────────────── */
+.reveal-target {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+
+/* ============================================
+   MEDIA QUERIES — RESPONSIVE BREAKPOINTS
+   ============================================
+
+   Breakpoint Map (matches Tailwind defaults):
+   ────────────────────────────────────────────
+   xs:  0px      (base — mobile first)
+   sm:  640px    (~phone landscape)
+   md:  768px    (~tablet portrait)
+   lg:  1024px   (~tablet landscape / small laptop)
+   xl:  1280px   (~laptop)
+   2xl: 1536px   (~desktop)
+   ============================================ */
+
+
+/* ── EXTRA SMALL (below 480px) ──────────────
+   For very small phones — iPhone SE, etc.
+   ──────────────────────────────────────────── */
+@media (max-width: 479px) {
+
+  /* Hero: reduce heading further */
+  #hero h1 {
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+
+  /* Hero stats: tighter spacing */
+  #hero .grid-cols-3 {
+    gap: 1rem;
+  }
+  #hero .grid-cols-3 > div:first-child .text-3xl,
+  #hero .grid-cols-3 > div:nth-child(2) .text-3xl,
+  #hero .grid-cols-3 > div:nth-child(3) .text-3xl {
+    font-size: 1.5rem;
+  }
+  #hero .grid-cols-3 .text-xs {
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* Section headings */
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+
+  /* Service cards: less padding */
+  #services .bg-white.p-8 {
+    padding: 1.25rem;
+  }
+
+  /* Executive grid: single column on tiny screens */
+  #executives .grid-cols-2 {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Event cards */
+  #events .bg-white .p-6 {
+    padding: 1rem;
+  }
+
+  /* Membership form padding */
+  #membership .bg-white.p-8 {
+    padding: 1.25rem;
+  }
+
+  /* Contact form */
+  #contact .bg-natural-50.p-8 {
+    padding: 1.25rem;
+  }
+
+  /* Footer: stack columns */
+  footer .grid.md\:grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Toast: full width on tiny screens */
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: none;
+    font-size: 0.8rem;
+  }
+
+  /* Back to top: smaller on small phones */
+  #backToTop {
+    width: 2.5rem;
+    height: 2.5rem;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
+
+/* ── SMALL (480px – 639px) ──────────────────
+   Larger phones / small phablets
+   ──────────────────────────────────────────── */
+@media (min-width: 480px) and (max-width: 639px) {
+
+  /* Hero heading */
+  #hero h1 {
+    font-size: 2.25rem;
+  }
+
+  /* Section headings */
+  .text-3xl {
+    font-size: 1.75rem;
+  }
+}
+
+
+/* ── MEDIUM (640px – 767px) ─────────────────
+   Phone landscape / large phones
+   ──────────────────────────────────────────── */
+@media (min-width: 640px) and (max-width: 767px) {
+
+  /* Hero heading */
+  #hero h1 {
+    font-size: 2.75rem;
+  }
+
+  /* About section: reduce gap */
+  #about .grid.md\:grid-cols-2 {
+    gap: 3rem;
+  }
+
+  /* Executive: 2 cols looks good here, just tighten */
+  #executives .grid-cols-2 {
+    gap: 1.25rem;
+  }
+}
+
+
+/* ── MEDIUM LARGE (768px – 1023px) ──────────
+   Tablet portrait
+   ──────────────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  /* Hero heading */
+  #hero h1 {
+    font-size: 3.5rem;
+  }
+
+  /* About decorative elements: hide to avoid overlap */
+  #about .absolute.-bottom-6,
+  #about .absolute.-top-4 {
+    display: none;
+  }
+
+  /* Events: ensure 3 cols fit nicely */
+  #events .grid.md\:grid-cols-3 {
+    gap: 1.25rem;
+  }
+
+  /* News: ensure 3 cols fit nicely */
+  #news .grid.md\:grid-cols-3 {
+    gap: 1.5rem;
+  }
+}
+
+
+/* ── LARGE (1024px – 1279px) ────────────────
+   Tablet landscape / small laptops
+   ──────────────────────────────────────────── */
+@media (min-width: 1024px) and (max-width: 1279px) {
+
+  /* Everything should be fine at this range */
+  /* This breakpoint is mostly for fine-tuning if needed */
+
+  /* Slightly reduce hero heading for 13" laptops */
+  #hero h1 {
+    font-size: 4rem;
+  }
+}
+
+
+/* ── EXTRA LARGE (1280px – 1535px) ──────────
+   Laptops / small desktops
+   ──────────────────────────────────────────── */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  /* Typically no changes needed — full layout */
+}
+
+
+/* ── 2XL+ (1536px and above) ────────────────
+   Large desktops / monitors
+   ──────────────────────────────────────────── */
+@media (min-width: 1536px) {
+
+  /* Bump up hero heading on large screens */
+  #hero h1 {
+    font-size: 5rem;
+  }
+
+  /* Add more breathing room in sections */
+  .py-24 {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+  .py-32 {
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+  }
+
+  /* About image: slightly larger */
+  #about .aspect-\[4\/5\] {
+    max-height: 700px;
+  }
+}
+
+
+/* ── REDUCED MOTION ─────────────────────────
+   Respect user's OS-level motion preference
+   ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-fadein,
+  .animate-fadein-delay-1,
+  .animate-fadein-delay-2,
+  .animate-fadein-delay-3 {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Reveal targets just appear */
+  .reveal-target {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
+/* ── HIGH CONTRAST MODE ─────────────────────
+   For users who prefer higher contrast
+   ──────────────────────────────────────────── */
+@media (prefers-contrast: high) {
+
+  .text-gray-500,
+  .text-gray-400 {
+    color: #4a4a4a;
+  }
+
+  .border-gray-200 {
+    border-color: #999;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+
+/* ── PRINT STYLES ───────────────────────────
+   Clean output for printing pages
+   ──────────────────────────────────────────── */
+@media print {
+
+  /* Hide non-essential elements */
+  #navbar,
+  #backToTop,
+  #menuToggle,
+  .mobile-menu,
+  .toast,
+  nav,
+  footer,
+  video,
+  .bg-natural-900.relative.overflow-hidden {
+    display: none !important;
+  }
+
+  /* Reset colors for print */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  /* Ensure text is readable */
+  h1, h2, h3, h4, h5, h6 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+
+  /* Show link URLs */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Remove shadows and backgrounds */
+  * {
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  /* Full width content */
+  .max-w-screen-xl {
+    max-width: 100% !important;
+  }
+
+  /* Avoid breaking inside cards */
+  .bg-white {
+    break-inside: avoid;
+  }
+}
+
+
+/* ── LANDSCAPE ON MOBILE ────────────────────
+   Specifically for phones held sideways
+   ──────────────────────────────────────────── */
+@media (max-height: 500px) and (orientation: landscape) {
+
+  /* Reduce hero height to fit viewport */
+  #hero {
+    min-height: auto;
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+
+  /* Smaller hero text in landscape */
+  #hero h1 {
+    font-size: 1.75rem;
+  }
+
+  #hero .py-20 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  /* Hide scroll indicator */
+  #hero .animate-bounce {
+    display: none;
+  }
+
+  /* Reduce section padding */
+  .py-24,
+  .py-32 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+
+/* ── TOUCH DEVICE OPTIMISATION ──────────────
+   Improve tap targets on touch screens
+   ──────────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+
+  /* Larger tap targets for all interactive elements */
+  a,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover-dependent effects that don't apply */
+  .group:hover .group-hover\:scale-105,
+  .group:hover .group-hover:scale-110 {
+    transform: none;
+  }
+
+  /* Make footer social icons larger for tapping */
+  footer a.w-9 {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+  .bg-white {
+    background: #2a2a2a;
+  }
+  .bg-natural-50 {
+    background: #222222;
+  }
+  .text-gray-500,
+  .text-gray-400 {
+    color: #999;
+  }
+  .border-gray-200 {
+    border-color: #444;
+  }
+}

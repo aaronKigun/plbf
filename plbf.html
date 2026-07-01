@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plateau Lawyers Bar Forum</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: { DEFAULT: '#C5A059', light: '#DCC287', dark: '#A68545' },
+            natural: { 50: '#F9F8F6', 100: '#F2EFE9', 900: '#2A2A2A' },
+            navy: { DEFAULT: '#0d1635', light: '#162050', dark: '#080e24' }
+          },
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="supabase-config.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="plbf.css">
+</head>
+<body class="font-sans text-natural-900 bg-white font-light">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ═══════════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════════ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 h-24 flex items-center transition-all duration-500" style="background: rgb(255 255 255 / 0.95); backdrop-filter: blur(4px);">
+    <div class="w-full max-w-screen-2xl mx-auto px-4 md:px-8 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-3 group">
+        <img src="images/Logo.jpg" alt="PLBF Logo" class="h-[55px] w-auto object-contain rounded-full">
+        <div class="hidden sm:block">
+          <div class="text-xs font-normal uppercase tracking-widest text-navy">Plateau Lawyers</div>
+          <div class="text-xs font-normal uppercase tracking-widest text-gold">Bar Forum</div>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden lg:flex items-center gap-10">
+        <a href="#about" class="text-xs uppercase tracking-widest hover:text-gold transition-colors duration-300">About</a>
+        <a href="#trustees" class="text-xs uppercase tracking-widest hover:text-gold transition-colors duration-300">Trustees</a>
+        <a href="#executives" class="text-xs uppercase tracking-widest hover:text-gold transition-colors duration-300">Leadership</a>
+        <a href="#services" class="text-xs uppercase tracking-widest hover:text-gold transition-colors duration-300">Programmes</a>
+        <a href="#events" class="text-xs uppercase tracking-widest hover:text-gold transition-colors duration-300">Events</a>
+        <a href="#contact" class="relative inline-block bg-navy text-white text-xs uppercase tracking-widest px-8 py-4 overflow-hidden group">
+          <span class="relative z-10 group-hover:text-navy transition-colors duration-300">Contact Us</span>
+          <span class="absolute inset-0 bg-gold transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+        </a>
+      </div>
+
+      <!-- Mobile Toggle -->
+      <button id="menuToggle" class="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5">
+        <span class="w-6 h-px bg-navy transition-all duration-300" id="bar1"></span>
+        <span class="w-6 h-px bg-navy transition-all duration-300" id="bar2"></span>
+        <span class="w-6 h-px bg-navy transition-all duration-300" id="bar3"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+  <div id="mobileMenu" style="display:none;position:fixed;top:96px;left:0;right:0;bottom:0;background:#ffffff !important;z-index:99999;">
+     <div style="padding:2rem 1.5rem;">
+    <a href="#about" class="mobile-link" style="display:block;padding:1rem 0;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.15em;color:#0d1635 !important;border-bottom:1px solid #f0eeeb;text-decoration:none !important;">About</a>
+    <a href="#trustees" class="mobile-link" style="display:block;padding:1rem 0;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.15em;color:#0d1635 !important;border-bottom:1px solid #f0eeeb;text-decoration:none !important;">Trustees</a>
+    <a href="#executives" class="mobile-link" style="display:block;padding:1rem 0;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.15em;color:#0d1635 !important;border-bottom:1px solid #f0eeeb;text-decoration:none !important;">Leadership</a>
+    <a href="#services" class="mobile-link" style="display:block;padding:1rem 0;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.15em;color:#0d1635 !important;border-bottom:1px solid #f0eeeb;text-decoration:none !important;">Programmes</a>
+    <a href="#events" class="mobile-link" style="display:block;padding:1rem 0;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.15em;color:#0d1635 !important;border-bottom:1px solid #f0eeeb;text-decoration:none !important;">Events</a>
+    <a href="#contact" class="mobile-link" style="display:block;margin-top:1.5rem;padding:1rem;background:#0d1635 !important;color:#ffffff !important;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.15em;text-align:center;text-decoration:none !important;">Contact Us</a>
+</div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════════ -->
+  <section id="hero" class="min-h-screen pt-24 relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="images/gavel.jpg" alt="Plateau Lawyers Bar Forum" class="w-full h-full object-cover" style="filter: grayscale(20%); opacity: 0.6;">
+      <div class="absolute inset-0" style="background: linear-gradient(to top, rgb(13 22 53 / 0.9) 0%, rgb(13 22 53 / 0.5) 50%, transparent 100%);"></div>
+    </div>
+
+    <div class="relative z-10 max-w-screen-xl mx-auto px-4 md:px-8 h-full min-h-[calc(100vh-96px)] flex items-center">
+      <div class="py-20 md:py-32 max-w-3xl">
+        <div class="animate-fadein">
+          <span class="text-gold text-xs uppercase tracking-widest font-normal mb-6 block">Advancing Justice on the Plateau</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-normal leading-[1.1] tracking-tight text-white animate-fadein-delay-1">
+          Plateau Lawyers<br>
+          <span class="font-serif italic text-gold-light">Bar Forum</span>
+        </h1>
+        <p class="mt-8 text-base font-light leading-relaxed text-gray-300 max-w-xl animate-fadein-delay-2">
+          A united body of legal practitioners committed to the promotion of the rule of law, protection of human rights, and the advancement of justice in Plateau State and beyond.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-4 animate-fadein-delay-3">
+          <a href="#membership" class="relative inline-block bg-gold text-navy text-xs uppercase tracking-widest px-8 py-4 overflow-hidden group font-normal">
+            <span class="relative z-10 group-hover:text-white transition-colors duration-300">Become a Member</span>
+            <span class="absolute inset-0 bg-navy transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+          </a>
+          <a href="#about" class="relative inline-block border border-white/30 text-white text-xs uppercase tracking-widest px-8 py-4 hover:border-gold hover:text-gold transition-all duration-300">
+            Learn More
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-16 grid grid-cols-3 gap-8 max-w-md animate-fadein-delay-3">
+          <div>
+            <div class="text-3xl font-normal text-white">500+</div>
+            <div class="text-xs uppercase tracking-widest text-gray-400 mt-1">Members</div>
+          </div>
+          <div>
+            <div class="text-3xl font-normal text-white">25+</div>
+            <div class="text-xs uppercase tracking-widest text-gray-400 mt-1">Years Active</div>
+          </div>
+          <div>
+            <div class="text-3xl font-normal text-white">100+</div>
+            <div class="text-xs uppercase tracking-widest text-gray-400 mt-1">Pro Bono Cases</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+      <iconify-icon icon="mdi:chevron-down" width="24" class="text-gold"></iconify-icon>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       ABOUT SECTION
+       ═══════════════════════════════════════ -->
+  <section id="about" class="py-24 md:py-32 bg-white">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div class="relative">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img src="https://picsum.photos/seed/law-books-court/800/1000.jpg" alt="About PLBF" class="w-full h-full object-cover" style="filter: grayscale(15%);">
+          </div>
+          <div class="absolute -bottom-6 -right-6 w-48 h-48 border border-gold/30 hidden md:block"></div>
+          <div class="absolute -top-4 -left-4 w-24 h-24 bg-navy/10 hidden md:block"></div>
+        </div>
+
+        <div>
+          <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">About Us</span>
+          <h2 class="text-3xl md:text-4xl font-normal tracking-tight mb-4">
+            Upholding the <span class="font-serif italic">Integrity</span> of the Legal Profession
+          </h2>
+          <p class="text-xs uppercase tracking-widest text-navy/60 mb-8 font-normal">Collegiality & Veritas</p>
+          <p class="text-base font-light leading-relaxed text-gray-600 mb-6">
+            The Plateau Lawyers Bar Forum (PLBF) is a non-partisan, non-political association of legal practitioners called to the Nigerian Bar, practicing in or originating from Plateau State. Established to foster unity, professional excellence, and mutual support among members.
+          </p>
+          <p class="text-base font-light leading-relaxed text-gray-600 mb-8">
+            We serve as a platform for intellectual discourse, advocacy for judicial reforms, and the protection of the rights and privileges of our members while contributing meaningfully to the development of the legal profession in Nigeria.
+          </p>
+
+          <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="flex items-start gap-3">
+              <iconify-icon icon="mdi:check-circle-outline" width="20" class="text-gold mt-0.5 flex-shrink-0"></iconify-icon>
+              <span class="text-sm font-light text-gray-600">Rule of Law Advocacy</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <iconify-icon icon="mdi:check-circle-outline" width="20" class="text-gold mt-0.5 flex-shrink-0"></iconify-icon>
+              <span class="text-sm font-light text-gray-600">Human Rights Protection</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <iconify-icon icon="mdi:check-circle-outline" width="20" class="text-gold mt-0.5 flex-shrink-0"></iconify-icon>
+              <span class="text-sm font-light text-gray-600">Legal Education & CLE</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <iconify-icon icon="mdi:check-circle-outline" width="20" class="text-gold mt-0.5 flex-shrink-0"></iconify-icon>
+              <span class="text-sm font-light text-gray-600">Members' Welfare</span>
+            </div>
+          </div>
+
+          <a href="#services" class="relative inline-block bg-navy text-white text-xs uppercase tracking-widest px-8 py-4 overflow-hidden group">
+            <span class="relative z-10 group-hover:text-navy transition-colors duration-300">Our Programmes</span>
+            <span class="absolute inset-0 bg-gold transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       TRUSTEES SECTION (Dynamic from Firebase)
+       ═══════════════════════════════════════ -->
+  <section id="trustees" class="py-24 md:py-32 bg-navy relative overflow-hidden">
+    <!-- Gold accent line at top -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+
+    <div class="relative z-10 max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">Pillar of Guidance</span>
+        <h2 class="text-3xl md:text-4xl font-normal tracking-tight mb-4 text-white">
+          Board of <span class="font-serif italic text-gold-light">Trustees</span>
+        </h2>
+        <p class="text-sm font-light leading-relaxed text-gray-400">
+          Distinguished senior members who provide strategic direction, wisdom, and steadfast support to the Forum.
+        </p>
+      </div>
+
+      <!-- 🔥 This grid is populated by Firebase -->
+      <div id="trusteesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+
+    <!-- Gold accent line at bottom -->
+    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       PROGRAMMES SECTION (Dynamic from Firebase)
+       ═══════════════════════════════════════ -->
+  <section id="services" class="py-24 md:py-32 bg-natural-50">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">What We Do</span>
+        <h2 class="text-3xl md:text-4xl font-normal tracking-tight mb-6">
+          Our <span class="font-serif italic">Mandate</span> & Programmes
+        </h2>
+        <p class="text-base font-light leading-relaxed text-gray-600">
+          Through structured programmes and sustained advocacy, we work to elevate the standard of legal practice and ensure justice is accessible to all.
+        </p>
+      </div>
+
+      <div id="programmesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       QUOTE BANNER
+       ═══════════════════════════════════════ -->
+  <section class="py-24 md:py-32 bg-navy relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gold/20"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-px bg-gold/20"></div>
+
+    <div class="relative z-10 max-w-screen-xl mx-auto px-4 md:px-8 text-center">
+      <iconify-icon icon="mdi:format-quote-open" width="48" class="text-gold/40 mb-8 inline-block"></iconify-icon>
+      <blockquote class="text-2xl md:text-3xl lg:text-4xl font-serif italic text-white leading-snug max-w-3xl mx-auto mb-8">
+        "Where there is no rule of law, there is no freedom. Where there is no justice, there can be no peace."
+      </blockquote>
+      <div class="w-16 h-px bg-gold mx-auto mb-4"></div>
+      <p class="text-xs uppercase tracking-widest text-gold">Our Guiding Principle</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       EXECUTIVE COMMITTEE (Dynamic from Firebase)
+       ═══════════════════════════════════════ -->
+  <section id="executives" class="py-24 md:py-32 bg-white">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">Leadership</span>
+        <h2 class="text-3xl md:text-4xl font-normal tracking-tight mb-6">
+          Executive <span class="font-serif italic">Committee</span>
+        </h2>
+        <p class="text-base font-light leading-relaxed text-gray-600">
+          Dedicated legal professionals elected to steer the affairs of the Forum with integrity and vision.
+        </p>
+      </div>
+
+      <div id="leadersGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       EVENTS SECTION (Dynamic from Firebase)
+       ═══════════════════════════════════════ -->
+  <section id="events" class="py-24 md:py-32 bg-natural-50">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+        <div>
+          <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">Upcoming</span>
+          <h2 class="text-3xl md:text-4xl font-normal tracking-tight">
+            Events & <span class="font-serif italic">Programmes</span>
+          </h2>
+        </div>
+        <a href="#" class="text-xs uppercase tracking-widest text-gold hover:text-gold-dark transition-colors mt-4 md:mt-0 flex items-center gap-2">
+          View All Events <iconify-icon icon="mdi:arrow-right" width="14"></iconify-icon>
+        </a>
+      </div>
+
+      <div id="eventsGrid" class="grid md:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       NEWS SECTION
+       ═══════════════════════════════════════ -->
+  <section id="news" class="py-24 md:py-32 bg-white">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+        <div>
+          <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">Latest</span>
+          <h2 class="text-3xl md:text-4xl font-normal tracking-tight">
+            News & <span class="font-serif italic">Updates</span>
+          </h2>
+        </div>
+      </div>
+
+      <div id="newsGrid" class="grid md:grid-cols-3 gap-8"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       MEMBERSHIP SECTION
+       ═══════════════════════════════════════ -->
+  <section id="membership" class="py-24 md:py-32 bg-natural-50 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 bg-navy/5 rounded-full blur-3xl"></div>
+
+    <div class="relative z-10 max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div>
+          <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">Join Us</span>
+          <h2 class="text-3xl md:text-4xl font-normal tracking-tight mb-6">
+            Become a <span class="font-serif italic">Member</span>
+          </h2>
+          <p class="text-base font-light leading-relaxed text-gray-600 mb-8">
+            Membership is open to all legal practitioners called to the Nigerian Bar who are either practicing in Plateau State or are of Plateau State origin.
+          </p>
+
+          <div class="space-y-4 mb-10">
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-gold">
+                <iconify-icon icon="mdi:certificate-outline" width="16"></iconify-icon>
+              </div>
+              <div>
+                <h4 class="text-sm font-normal mb-1">Professional Recognition</h4>
+                <p class="text-sm font-light text-gray-500">Be part of a recognised and respected body within the Nigerian legal community.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-gold">
+                <iconify-icon icon="mdi:network" width="16"></iconify-icon>
+              </div>
+              <div>
+                <h4 class="text-sm font-normal mb-1">Networking Opportunities</h4>
+                <p class="text-sm font-light text-gray-500">Connect with senior advocates, judges, and legal luminaries at our events.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-gold">
+                <iconify-icon icon="mdi:book-open-variant" width="16"></iconify-icon>
+              </div>
+              <div>
+                <h4 class="text-sm font-normal mb-1">Access to Resources</h4>
+                <p class="text-sm font-light text-gray-500">Enjoy access to legal publications, law reports, and continuing education materials.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-8 md:p-10 shadow-sm">
+          <h3 class="text-lg font-normal tracking-tight mb-6">Membership Application</h3>
+          <form id="membershipForm" class="space-y-5">
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Full Name *</label>
+              <input type="text" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="e.g. Chinedu A. Bako, Esq.">
+            </div>
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Email Address *</label>
+              <input type="email" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="your@email.com">
+            </div>
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Phone Number *</label>
+              <input type="tel" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="+234 XXX XXX XXXX">
+            </div>
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Call to Bar Year *</label>
+              <input type="text" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="e.g. 2015">
+            </div>
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Practice Area</label>
+              <select class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent text-gray-500">
+                <option value="">Select practice area</option>
+                <option>Litigation</option>
+                <option>Corporate & Commercial Law</option>
+                <option>Criminal Law</option>
+                <option>Human Rights Law</option>
+                <option>Family Law</option>
+                <option>Property & Conveyancing</option>
+                <option>Public Interest Law</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <button type="submit" class="relative w-full bg-navy text-white text-xs uppercase tracking-widest px-8 py-4 overflow-hidden group mt-4">
+              <span class="relative z-10 group-hover:text-navy transition-colors duration-300">Submit Application</span>
+              <span class="absolute inset-0 bg-gold transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       CONTACT SECTION
+       ═══════════════════════════════════════ -->
+  <section id="contact" class="py-24 md:py-32 bg-white">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-gold text-xs uppercase tracking-widest font-normal mb-4 block">Get in Touch</span>
+        <h2 class="text-3xl md:text-4xl font-normal tracking-tight mb-6">
+          Contact <span class="font-serif italic">Us</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-16">
+        <div class="text-center p-8 bg-natural-50 group hover:-translate-y-1 transition-transform duration-300">
+          <div class="w-12 h-12 mx-auto flex items-center justify-center border border-gold/30 text-gold mb-4 group-hover:scale-110 transition-transform duration-300">
+            <iconify-icon icon="mdi:map-marker-outline" width="24"></iconify-icon>
+          </div>
+          <h3 class="text-sm font-normal mb-2">Secretariat</h3>
+          <p class="text-sm font-light text-gray-500">Plateau Lawyers Bar Forum<br>Near High Court Complex<br>Jos, Plateau State, Nigeria</p>
+        </div>
+        <div class="text-center p-8 bg-natural-50 group hover:-translate-y-1 transition-transform duration-300">
+          <div class="w-12 h-12 mx-auto flex items-center justify-center border border-gold/30 text-gold mb-4 group-hover:scale-110 transition-transform duration-300">
+            <iconify-icon icon="mdi:email-outline" width="24"></iconify-icon>
+          </div>
+          <h3 class="text-sm font-normal mb-2">Email</h3>
+          <p class="text-sm font-light text-gray-500">info@plateaulawyersforum.org<br>secretary@plateaulawyersforum.org</p>
+        </div>
+        <div class="text-center p-8 bg-natural-50 group hover:-translate-y-1 transition-transform duration-300">
+          <div class="w-12 h-12 mx-auto flex items-center justify-center border border-gold/30 text-gold mb-4 group-hover:scale-110 transition-transform duration-300">
+            <iconify-icon icon="mdi:phone-outline" width="24"></iconify-icon>
+          </div>
+          <h3 class="text-sm font-normal mb-2">Phone</h3>
+          <p class="text-sm font-light text-gray-500">+234 803 XXX XXXX<br>+234 708 XXX XXXX</p>
+        </div>
+      </div>
+
+      <div class="max-w-2xl mx-auto bg-natural-50 p-8 md:p-12">
+        <form id="contactForm" class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Name *</label>
+              <input type="text" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="Your full name">
+            </div>
+            <div>
+              <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Email *</label>
+              <input type="email" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="your@email.com">
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Subject *</label>
+            <input type="text" required class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent" placeholder="How can we help?">
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-500 block mb-2">Message *</label>
+            <textarea required rows="4" class="w-full border-b border-gray-200 focus:border-gold outline-none py-3 text-sm font-light transition-colors bg-transparent resize-none" placeholder="Your message..."></textarea>
+          </div>
+          <button type="submit" class="relative bg-navy text-white text-xs uppercase tracking-widest px-8 py-4 overflow-hidden group">
+            <span class="relative z-10 group-hover:text-navy transition-colors duration-300">Send Message</span>
+            <span class="absolute inset-0 bg-gold transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER (Two Logos)
+       ═══════════════════════════════════════ -->
+  <footer class="bg-navy pt-20 pb-8 relative overflow-hidden">
+    <!-- Top gold line -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+      <div class="grid md:grid-cols-4 gap-12 md:gap-8 mb-16">
+
+        <!-- Column 1: Logos -->
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-4 mb-6">
+            <img src="images/Logo.jpg" alt="PLBF Logo" class="h-[60px] w-auto object-contain rounded-full">
+            <img src="images/NBA.png" alt="NBA Logo" class="h-[60px] w-auto object-contain rounded-full">
+          </div>
+          <p class="text-sm font-light text-gray-400 leading-relaxed mb-6">
+            Advancing justice, promoting the rule of law, and protecting the rights of legal practitioners in Plateau State.
+          </p>
+          <p class="text-[10px] uppercase tracking-widest text-gold/60 mb-6">Collegiality & Veritas</p>
+          <div class="flex gap-4">
+            <a href="#" class="w-9 h-9 flex items-center justify-center border border-gray-600 text-gray-400 hover:border-gold hover:text-gold transition-colors duration-300">
+              <iconify-icon icon="mdi:facebook" width="16"></iconify-icon>
+            </a>
+            <a href="#" class="w-9 h-9 flex items-center justify-center border border-gray-600 text-gray-400 hover:border-gold hover:text-gold transition-colors duration-300">
+              <iconify-icon icon="mdi:twitter" width="16"></iconify-icon>
+            </a>
+            <a href="#" class="w-9 h-9 flex items-center justify-center border border-gray-600 text-gray-400 hover:border-gold hover:text-gold transition-colors duration-300">
+              <iconify-icon icon="mdi:linkedin" width="16"></iconify-icon>
+            </a>
+            <a href="#" class="w-9 h-9 flex items-center justify-center border border-gray-600 text-gray-400 hover:border-gold hover:text-gold transition-colors duration-300">
+              <iconify-icon icon="mdi:whatsapp" width="16"></iconify-icon>
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 2 -->
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-white mb-6">Quick Links</h4>
+          <ul class="space-y-3">
+            <li><a href="#about" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">About Us</a></li>
+            <li><a href="#trustees" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Trustees</a></li>
+            <li><a href="#executives" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Leadership</a></li>
+            <li><a href="#services" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Programmes</a></li>
+            <li><a href="#events" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Events</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3 -->
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-white mb-6">Resources</h4>
+          <ul class="space-y-3">
+            <li><a href="#membership" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Membership</a></li>
+            <li><a href="#" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Constitution</a></li>
+            <li><a href="#" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Code of Conduct</a></li>
+            <li><a href="#" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Legal Resources</a></li>
+            <li><a href="#" class="text-sm font-light text-gray-400 hover:text-gold transition-colors duration-300">Annual Reports</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4 -->
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-white mb-6">Newsletter</h4>
+          <p class="text-sm font-light text-gray-400 mb-4">Stay updated with our latest news, events, and legal updates.</p>
+          <form id="newsletterForm" class="flex">
+            <input type="email" required placeholder="Your email" class="flex-1 bg-transparent border border-gray-600 border-r-0 px-4 py-3 text-sm font-light text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors">
+            <button type="submit" class="bg-gold text-navy px-4 py-3 hover:bg-gold-light transition-colors duration-300">
+              <iconify-icon icon="mdi:send" width="16"></iconify-icon>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-gray-700/50 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs font-light text-gray-500">
+          © 2026 Plateau Lawyers Bar Forum. All rights reserved.
+        </p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs font-light text-gray-500 hover:text-gold transition-colors">Privacy Policy</a>
+          <a href="#" class="text-xs font-light text-gray-500 hover:text-gold transition-colors">Terms of Use</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-navy text-gold flex items-center justify-center shadow-lg z-50 opacity-0 pointer-events-none transition-all duration-300 hover:bg-gold hover:text-navy">
+    <iconify-icon icon="mdi:chevron-up" width="24"></iconify-icon>
+  </button>
+
+  <!-- Custom Scripts -->
+  <script src="plbf.js"></script>
+</body>
+</html>
