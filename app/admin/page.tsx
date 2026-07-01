@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { supabase, uploadImage } from '@/lib/supabase';
 import type { Trustee, Leader, EventItem, NewsItem, Programme } from '@/types/content';
 
+type FileSetter = (value: (prev: any) => any) => void;
+
 export default function AdminPage() {
   const [trustees, setTrustees] = useState<Trustee[]>([]);
   const [leaders, setLeaders] = useState<Leader[]>([]);
@@ -93,7 +95,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, setter: (value: any) => void) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, setter: FileSetter) => {
     const file = event.target.files?.[0];
     if (!file) return;
     const url = await uploadImage(file, 'uploads');
@@ -102,63 +104,283 @@ export default function AdminPage() {
     }
   };
 
+  const stats = [
+    { label: 'Events', value: events.length, icon: 'E' },
+    { label: 'Leaders', value: leaders.length, icon: 'L' },
+    { label: 'Programmes', value: programmes.length, icon: 'P' },
+    { label: 'Trustees', value: trustees.length, icon: 'T' },
+    { label: 'News', value: news.length, icon: 'N' }
+  ];
+
   return (
-    <main style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>Admin Dashboard</h1>
-      <p>Manage trustees, leadership, events, news, and programmes.</p>
-      {loading ? <p>Loading...</p> : null}
+    <main className="admin-shell">
+      <aside className="admin-sidebar">
+        <a className="admin-logo" href="/">
+          <img src="/images/Logo.jpg" alt="PLBF logo" />
+          <span>
+            Plateau Lawyers
+            <br />
+            <strong>Bar Forum</strong>
+          </span>
+        </a>
 
-      <section style={{ marginTop: '2rem' }}>
-        <h2>Trustees</h2>
-        <input value={trusteeForm.name} onChange={(e) => setTrusteeForm({ ...trusteeForm, name: e.target.value })} placeholder="Name" />
-        <input value={trusteeForm.position} onChange={(e) => setTrusteeForm({ ...trusteeForm, position: e.target.value })} placeholder="Position" />
-        <textarea value={trusteeForm.bio} onChange={(e) => setTrusteeForm({ ...trusteeForm, bio: e.target.value })} placeholder="Bio" />
-        <input type="file" onChange={(e) => handleFileUpload(e, (value) => setTrusteeForm((prev) => ({ ...prev, ...value })))} />
-        <button onClick={handleTrusteeSave}>Add Trustee</button>
-        <ul>{trustees.map((item) => <li key={item.name}>{item.name} — {item.position}</li>)}</ul>
-      </section>
+        <nav className="admin-nav" aria-label="Admin sections">
+          <a className="active" href="#admin-dashboard">Dashboard</a>
+          <a href="#admin-trustees">Trustees</a>
+          <a href="#admin-leaders">Leadership</a>
+          <a href="#admin-events">Events</a>
+          <a href="#admin-news">News</a>
+          <a href="#admin-programmes">Programmes</a>
+        </nav>
 
-      <section style={{ marginTop: '2rem' }}>
-        <h2>Leadership</h2>
-        <input value={leaderForm.name} onChange={(e) => setLeaderForm({ ...leaderForm, name: e.target.value })} placeholder="Name" />
-        <input value={leaderForm.position} onChange={(e) => setLeaderForm({ ...leaderForm, position: e.target.value })} placeholder="Position" />
-        <input type="file" onChange={(e) => handleFileUpload(e, (value) => setLeaderForm((prev) => ({ ...prev, ...value })))} />
-        <button onClick={handleLeaderSave}>Add Leader</button>
-        <ul>{leaders.map((item) => <li key={item.name}>{item.name} — {item.position}</li>)}</ul>
-      </section>
+        <div className="admin-sidebar-footer">
+          <a className="admin-view-site" href="/">View Website</a>
+        </div>
+      </aside>
 
-      <section style={{ marginTop: '2rem' }}>
-        <h2>Events</h2>
-        <input value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} placeholder="Title" />
-        <input value={eventForm.date} onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })} placeholder="Date" />
-        <input value={eventForm.category} onChange={(e) => setEventForm({ ...eventForm, category: e.target.value })} placeholder="Category" />
-        <input value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} placeholder="Location" />
-        <textarea value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} placeholder="Description" />
-        <input type="file" onChange={(e) => handleFileUpload(e, (value) => setEventForm((prev) => ({ ...prev, ...value })))} />
-        <button onClick={handleEventSave}>Add Event</button>
-        <ul>{events.map((item) => <li key={item.title}>{item.title} — {item.date}</li>)}</ul>
-      </section>
+      <div className="admin-main">
+        <header className="admin-topbar">
+          <span className="admin-page-title">Dashboard</span>
+          <div className="admin-user">
+            <span>Administrator</span>
+            <span className="admin-avatar">AD</span>
+          </div>
+        </header>
 
-      <section style={{ marginTop: '2rem' }}>
-        <h2>News</h2>
-        <input value={newsForm.title} onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })} placeholder="Title" />
-        <input value={newsForm.date} onChange={(e) => setNewsForm({ ...newsForm, date: e.target.value })} placeholder="Date" />
-        <input value={newsForm.category} onChange={(e) => setNewsForm({ ...newsForm, category: e.target.value })} placeholder="Category" />
-        <textarea value={newsForm.excerpt} onChange={(e) => setNewsForm({ ...newsForm, excerpt: e.target.value })} placeholder="Excerpt" />
-        <textarea value={newsForm.content} onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })} placeholder="Content" />
-        <input type="file" onChange={(e) => handleFileUpload(e, (value) => setNewsForm((prev) => ({ ...prev, ...value })))} />
-        <button onClick={handleNewsSave}>Add News</button>
-        <ul>{news.map((item) => <li key={item.title}>{item.title} — {item.category}</li>)}</ul>
-      </section>
+        <div className="admin-content">
+          <section id="admin-dashboard" className="admin-hero">
+            <h1>Admin Dashboard</h1>
+            <p>Manage trustees, leadership, events, news, and programmes for the Plateau Lawyers Bar Forum website.</p>
+          </section>
 
-      <section style={{ marginTop: '2rem' }}>
-        <h2>Programmes</h2>
-        <input value={programmeForm.title} onChange={(e) => setProgrammeForm({ ...programmeForm, title: e.target.value })} placeholder="Title" />
-        <input value={programmeForm.icon} onChange={(e) => setProgrammeForm({ ...programmeForm, icon: e.target.value })} placeholder="Icon" />
-        <textarea value={programmeForm.description} onChange={(e) => setProgrammeForm({ ...programmeForm, description: e.target.value })} placeholder="Description" />
-        <button onClick={handleProgrammeSave}>Add Programme</button>
-        <ul>{programmes.map((item) => <li key={item.title}>{item.title}</li>)}</ul>
-      </section>
+          {loading ? <p className="loading-note">Loading content...</p> : null}
+
+          <section className="stats-grid" aria-label="Content summary">
+            {stats.map((stat) => (
+              <article className="stat-card" key={stat.label}>
+                <div className="stat-icon" aria-hidden="true">{stat.icon}</div>
+                <div>
+                  <div className="stat-number">{stat.value}</div>
+                  <div className="stat-label">{stat.label}</div>
+                </div>
+              </article>
+            ))}
+          </section>
+
+          <div className="admin-grid">
+            <section id="admin-trustees" className="admin-panel">
+              <div className="panel-header">
+                <h2>Board of Trustees</h2>
+              </div>
+              <div className="panel-body">
+                <div className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="trustee-name">Name</label>
+                    <input id="trustee-name" value={trusteeForm.name} onChange={(e) => setTrusteeForm({ ...trusteeForm, name: e.target.value })} placeholder="Full name" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="trustee-position">Position</label>
+                    <input id="trustee-position" value={trusteeForm.position} onChange={(e) => setTrusteeForm({ ...trusteeForm, position: e.target.value })} placeholder="Position" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="trustee-bio">Short Bio</label>
+                    <textarea id="trustee-bio" value={trusteeForm.bio} onChange={(e) => setTrusteeForm({ ...trusteeForm, bio: e.target.value })} placeholder="Brief description" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="trustee-file">Photo</label>
+                    <input id="trustee-file" type="file" onChange={(e) => handleFileUpload(e, setTrusteeForm)} />
+                  </div>
+                  <div className="form-actions">
+                    <button className="btn btn-gold" type="button" onClick={handleTrusteeSave}>Add Trustee</button>
+                  </div>
+                </div>
+              </div>
+              <AdminTable
+                headings={['Name', 'Position']}
+                emptyText="No trustees added yet."
+                rows={trustees.map((item) => [item.name, item.position])}
+              />
+            </section>
+
+            <section id="admin-leaders" className="admin-panel">
+              <div className="panel-header">
+                <h2>Leadership</h2>
+              </div>
+              <div className="panel-body">
+                <div className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="leader-name">Name</label>
+                    <input id="leader-name" value={leaderForm.name} onChange={(e) => setLeaderForm({ ...leaderForm, name: e.target.value })} placeholder="Full name" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="leader-position">Position</label>
+                    <input id="leader-position" value={leaderForm.position} onChange={(e) => setLeaderForm({ ...leaderForm, position: e.target.value })} placeholder="Position" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="leader-file">Photo</label>
+                    <input id="leader-file" type="file" onChange={(e) => handleFileUpload(e, setLeaderForm)} />
+                  </div>
+                  <div className="form-actions">
+                    <button className="btn btn-gold" type="button" onClick={handleLeaderSave}>Add Leader</button>
+                  </div>
+                </div>
+              </div>
+              <AdminTable
+                headings={['Name', 'Position']}
+                emptyText="No leaders added yet."
+                rows={leaders.map((item) => [item.name, item.position])}
+              />
+            </section>
+
+            <section id="admin-events" className="admin-panel wide">
+              <div className="panel-header">
+                <h2>Events</h2>
+              </div>
+              <div className="panel-body">
+                <div className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="event-title">Title</label>
+                    <input id="event-title" value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} placeholder="Event title" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="event-date">Date</label>
+                    <input id="event-date" value={eventForm.date} onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })} placeholder="Date" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="event-category">Category</label>
+                    <input id="event-category" value={eventForm.category} onChange={(e) => setEventForm({ ...eventForm, category: e.target.value })} placeholder="Category" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="event-location">Location</label>
+                    <input id="event-location" value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} placeholder="Location" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="event-description">Description</label>
+                    <textarea id="event-description" value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} placeholder="Brief description" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="event-file">Image</label>
+                    <input id="event-file" type="file" onChange={(e) => handleFileUpload(e, setEventForm)} />
+                  </div>
+                  <div className="form-actions">
+                    <button className="btn btn-gold" type="button" onClick={handleEventSave}>Add Event</button>
+                  </div>
+                </div>
+              </div>
+              <AdminTable
+                headings={['Title', 'Date', 'Location', 'Category']}
+                emptyText="No events added yet."
+                rows={events.map((item) => [item.title, item.date, item.location, item.category])}
+                badgeColumn={3}
+              />
+            </section>
+
+            <section id="admin-news" className="admin-panel wide">
+              <div className="panel-header">
+                <h2>News</h2>
+              </div>
+              <div className="panel-body">
+                <div className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="news-title">Title</label>
+                    <input id="news-title" value={newsForm.title} onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })} placeholder="News title" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="news-date">Date</label>
+                    <input id="news-date" value={newsForm.date} onChange={(e) => setNewsForm({ ...newsForm, date: e.target.value })} placeholder="Date" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="news-category">Category</label>
+                    <input id="news-category" value={newsForm.category} onChange={(e) => setNewsForm({ ...newsForm, category: e.target.value })} placeholder="Category" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="news-excerpt">Excerpt</label>
+                    <textarea id="news-excerpt" value={newsForm.excerpt} onChange={(e) => setNewsForm({ ...newsForm, excerpt: e.target.value })} placeholder="Short summary" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="news-content">Content</label>
+                    <textarea id="news-content" value={newsForm.content} onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })} placeholder="Full article" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="news-file">Image</label>
+                    <input id="news-file" type="file" onChange={(e) => handleFileUpload(e, setNewsForm)} />
+                  </div>
+                  <div className="form-actions">
+                    <button className="btn btn-gold" type="button" onClick={handleNewsSave}>Add News</button>
+                  </div>
+                </div>
+              </div>
+              <AdminTable
+                headings={['Title', 'Date', 'Category']}
+                emptyText="No news added yet."
+                rows={news.map((item) => [item.title, item.date, item.category])}
+                badgeColumn={2}
+              />
+            </section>
+
+            <section id="admin-programmes" className="admin-panel wide">
+              <div className="panel-header">
+                <h2>Programmes</h2>
+              </div>
+              <div className="panel-body">
+                <div className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="programme-title">Title</label>
+                    <input id="programme-title" value={programmeForm.title} onChange={(e) => setProgrammeForm({ ...programmeForm, title: e.target.value })} placeholder="Programme title" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="programme-icon">Icon</label>
+                    <input id="programme-icon" value={programmeForm.icon} onChange={(e) => setProgrammeForm({ ...programmeForm, icon: e.target.value })} placeholder="Icon name" />
+                  </div>
+                  <div className="form-group full">
+                    <label htmlFor="programme-description">Description</label>
+                    <textarea id="programme-description" value={programmeForm.description} onChange={(e) => setProgrammeForm({ ...programmeForm, description: e.target.value })} placeholder="Programme description" />
+                  </div>
+                  <div className="form-actions">
+                    <button className="btn btn-gold" type="button" onClick={handleProgrammeSave}>Add Programme</button>
+                  </div>
+                </div>
+              </div>
+              <AdminTable
+                headings={['Title', 'Description']}
+                emptyText="No programmes added yet."
+                rows={programmes.map((item) => [item.title, item.description])}
+              />
+            </section>
+          </div>
+        </div>
+      </div>
     </main>
+  );
+}
+
+function AdminTable({ headings, rows, emptyText, badgeColumn }: { headings: string[]; rows: string[][]; emptyText: string; badgeColumn?: number }) {
+  if (!rows.length) {
+    return <div className="empty-state">{emptyText}</div>;
+  }
+
+  return (
+    <div className="table-wrapper">
+      <table className="admin-table">
+        <thead>
+          <tr>
+            {headings.map((heading) => (
+              <th key={heading}>{heading}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr key={`${row[0]}-${rowIndex}`}>
+              {row.map((cell, cellIndex) => (
+                <td key={`${cell}-${cellIndex}`}>
+                  {badgeColumn === cellIndex ? <span className="table-badge">{cell || 'Update'}</span> : cell || 'Not set'}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

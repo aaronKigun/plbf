@@ -4,7 +4,7 @@ export default function Navbar() {
       <div className="navbar-inner">
         <a href="#hero" className="brand">
           <img src="/images/Logo.jpg" alt="PLBF logo" className="brand-logo" />
-          <span>PLBF</span>
+          <span>PLATEAU LAWYERS BAR FORUM</span>
         </a>
         <div className="nav-links">
           <a href="#about">About</a>
