@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase, uploadImage } from '@/lib/supabase';
-import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, SectionHeading, Member, ContactMessage } from '@/types/content';
-import { DEFAULT_SECTION_HEADINGS } from '@/lib/sectionHeadings';
+import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, Member, ContactMessage } from '@/types/content';
 
 type FileSetter = (value: (prev: any) => any) => void;
 
@@ -21,7 +20,6 @@ export default function AdminPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
-  const [sectionHeadings, setSectionHeadings] = useState<SectionHeading[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,14 +48,13 @@ export default function AdminPage() {
 
   const loadData = async () => {
     setLoading(true);
-    const [trusteesResult, leadersResult, eventsResult, newsResult, galleryResult, videosResult, headingsResult, membersResult, messagesResult] = await Promise.all([
+    const [trusteesResult, leadersResult, eventsResult, newsResult, galleryResult, videosResult, membersResult, messagesResult] = await Promise.all([
       supabase.from('trustees').select('*').order('display_order', { ascending: true }),
       supabase.from('leaders').select('*').order('display_order', { ascending: true }),
       supabase.from('events').select('*').order('date', { ascending: false }),
       supabase.from('news').select('*').order('date', { ascending: false }),
       supabase.from('gallery_items').select('*').order('display_order', { ascending: true }),
       supabase.from('videos').select('*').order('display_order', { ascending: true }),
-      supabase.from('section_headings').select('*'),
       supabase.from('members').select('*').order('created_at', { ascending: false }),
       supabase.from('contact_messages').select('*').order('created_at', { ascending: false })
     ]);
@@ -68,7 +65,6 @@ export default function AdminPage() {
     setNews((newsResult.data as NewsItem[]) || []);
     setGallery((galleryResult.data as GalleryItem[]) || []);
     setVideos((videosResult.data as VideoItem[]) || []);
-    setSectionHeadings((headingsResult.data as SectionHeading[]) || []);
     setMembers((membersResult.data as Member[]) || []);
     setMessages((messagesResult.data as ContactMessage[]) || []);
     setLoading(false);
@@ -201,23 +197,6 @@ export default function AdminPage() {
     }
   };
 
-  const saveSectionHeading = async (heading: SectionHeading) => {
-    showNotice('');
-    const { error } = await supabase.from('section_headings').upsert({
-      key: heading.key,
-      eyebrow: heading.eyebrow || null,
-      title: heading.title,
-      title_highlight: heading.title_highlight || null,
-      intro: heading.intro || null
-    });
-    if (error) {
-      showNotice(error.message, true);
-    } else {
-      showNotice(`${heading.key} heading saved successfully.`);
-      loadData();
-    }
-  };
-
   const deleteRecord = async (table: string, id: number, label: string, onDone: () => void) => {
     if (!window.confirm(`Delete this ${label}?`)) return;
     showNotice('');
@@ -294,19 +273,6 @@ export default function AdminPage() {
     { label: 'Messages', value: messages.length, icon: '@' }
   ];
 
-  const headingValue = (key: string): SectionHeading => {
-    const saved = sectionHeadings.find((item) => item.key === key);
-    return saved || DEFAULT_SECTION_HEADINGS[key];
-  };
-
-  const updateHeadingField = (key: string, field: keyof SectionHeading, value: string) => {
-    setSectionHeadings((current) => {
-      const existing = current.find((item) => item.key === key) || { ...DEFAULT_SECTION_HEADINGS[key] };
-      const others = current.filter((item) => item.key !== key);
-      return [...others, { ...existing, [field]: value }];
-    });
-  };
-
   if (authLoading) {
     return <main className="login-screen"><p className="loading-note">Loading admin...</p></main>;
   }
@@ -339,7 +305,6 @@ export default function AdminPage() {
 
         <nav className="admin-nav" aria-label="Admin sections">
           <a className="active" href="#admin-dashboard">Dashboard</a>
-          <a href="#admin-headings">Section Headings</a>
           <a href="#admin-trustees">Trustees</a>
           <a href="#admin-leaders">Leadership</a>
           <a href="#admin-events">Events</a>
@@ -385,30 +350,6 @@ export default function AdminPage() {
           </section>
 
           <div className="admin-grid">
-            <section id="admin-headings" className="admin-panel wide">
-              <PanelTitle title="Section Headings" />
-              <div className="panel-body">
-                <p className="panel-note">Update the eyebrow, title, highlighted text, and intro shown on each homepage section. The hero section is not managed here.</p>
-                <div className="headings-grid">
-                  {Object.values(DEFAULT_SECTION_HEADINGS).map((defaults) => {
-                    const current = headingValue(defaults.key);
-                    return (
-                      <article key={defaults.key} className="heading-card">
-                        <h3>{defaults.key}</h3>
-                        <div className="admin-form">
-                          <Field label="Eyebrow" id={`${defaults.key}-eyebrow`}><input id={`${defaults.key}-eyebrow`} value={current.eyebrow || ''} onChange={(e) => updateHeadingField(defaults.key, 'eyebrow', e.target.value)} placeholder="Eyebrow" /></Field>
-                          <Field label="Title" id={`${defaults.key}-title`}><input id={`${defaults.key}-title`} value={current.title} onChange={(e) => updateHeadingField(defaults.key, 'title', e.target.value)} placeholder="Section title" /></Field>
-                          <Field label="Highlighted Text" id={`${defaults.key}-highlight`}><input id={`${defaults.key}-highlight`} value={current.title_highlight || ''} onChange={(e) => updateHeadingField(defaults.key, 'title_highlight', e.target.value)} placeholder="Optional gold text" /></Field>
-                          <Field label="Intro" id={`${defaults.key}-intro`} full><textarea id={`${defaults.key}-intro`} value={current.intro || ''} onChange={(e) => updateHeadingField(defaults.key, 'intro', e.target.value)} placeholder="Section intro" /></Field>
-                          <div className="form-actions"><button className="btn btn-gold" type="button" onClick={() => saveSectionHeading(current)}>Save {defaults.key}</button></div>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-
             <section id="admin-trustees" className="admin-panel">
               <PanelTitle title="Board of Trustees" viewHref="/#trustees" />
               <div className="panel-body">

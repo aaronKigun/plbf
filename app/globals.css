@@ -115,17 +115,18 @@ main {
 
 .menu-toggle {
   display: none;
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--white);
+  color: var(--navy);
   cursor: pointer;
   padding: 0;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 .menu-toggle:hover {
@@ -133,73 +134,102 @@ main {
   box-shadow: 0 8px 20px rgba(13, 22, 53, 0.08);
 }
 
-.menu-toggle-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 16px;
-  position: relative;
+.justice-icon {
+  width: 26px;
+  height: 26px;
+  transform-origin: 12px 12px;
+  animation: justiceSpin 7s linear infinite;
 }
 
-.menu-toggle-box span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--navy);
-  transition: transform 0.25s ease, opacity 0.2s ease, width 0.25s ease;
+.menu-toggle:hover .justice-icon {
+  animation-duration: 2.4s;
 }
 
-.menu-toggle-box span + span {
-  margin-top: 5px;
+.menu-toggle.is-open {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(197, 160, 89, 0.08);
 }
 
-.menu-toggle.is-open .menu-toggle-box span:first-child {
-  transform: translateY(7px) rotate(45deg);
+.menu-toggle.is-open .justice-icon {
+  animation-duration: 1.6s;
 }
 
-.menu-toggle.is-open .menu-toggle-box span:nth-child(2) {
-  opacity: 0;
-  width: 0;
+@keyframes justiceSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.menu-toggle.is-open .menu-toggle-box span:last-child {
-  transform: translateY(-7px) rotate(-45deg);
+@media (prefers-reduced-motion: reduce) {
+  .justice-icon {
+    animation: none;
+  }
 }
 
 .nav-links {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: clamp(0.9rem, 2vw, 2.5rem);
-  flex-wrap: wrap;
+  gap: clamp(0.55rem, 1.15vw, 1.4rem);
+  flex-wrap: nowrap;
 }
 
 .nav-links a {
   position: relative;
-  font-size: 0.68rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
+  padding: 0.35rem 0;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--ink);
   transition: color 0.25s ease;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s ease;
 }
 
 .nav-links a:hover {
   color: var(--gold);
 }
 
+.nav-links a:hover::after {
+  transform: scaleX(1);
+}
+
 .nav-links a:last-child {
-  padding: 0.9rem 1.5rem;
+  margin-left: 0.35rem;
+  padding: 0.8rem 1.35rem;
+  border-radius: 999px;
   background: var(--navy);
   color: var(--white);
+  letter-spacing: 0.12em;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.nav-links a:last-child::after {
+  display: none;
 }
 
 .nav-links a:last-child:hover {
   background: var(--gold);
   color: var(--navy);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(197, 160, 89, 0.3);
 }
 
 /* Existing hero is intentionally preserved. */
@@ -1642,7 +1672,7 @@ main {
   }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1240px) {
   .navbar {
     min-height: 82px;
   }
@@ -1704,6 +1734,10 @@ main {
     border-bottom: 1px solid var(--line);
     color: var(--navy);
     text-align: center;
+  }
+
+  .nav-links a::after {
+    display: none;
   }
 
   .nav-links a:last-child {

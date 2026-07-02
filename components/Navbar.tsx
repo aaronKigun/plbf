@@ -34,11 +34,24 @@ export default function Navbar() {
           aria-controls="primary-navigation"
           onClick={() => setOpen((current) => !current)}
         >
-          <span className="menu-toggle-box" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </span>
+          <svg
+            className="justice-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="3.4" r="1.1" />
+            <path d="M12 4.5v15" />
+            <path d="M7.5 19.5h9" />
+            <path d="M4.5 6.2h15" />
+            <path d="M12 4.8 6 6.4M12 4.8l6 1.6" />
+            <path d="M4.5 6.2 2 11.4a2.5 2.5 0 0 0 5 0L4.5 6.2Z" />
+            <path d="M19.5 6.2 17 11.4a2.5 2.5 0 0 0 5 0l-2.5-5.2Z" />
+          </svg>
         </button>
         <div id="primary-navigation" className="nav-links">
           {navItems.map((item) => (
