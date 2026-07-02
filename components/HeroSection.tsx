@@ -19,10 +19,10 @@ export default function HeroSection({ title, subtitle, description }: HeroSectio
             <a href="#membership" className="btn btn-gold">Become a Member</a>
           </div>
         </div>
-        {/* <div className="hero-visual" aria-hidden="true">
+        <div className="hero-visual" aria-hidden="true">
           <div className="hero-card hero-card-main" />
           <div className="hero-card hero-card-secondary" />
-        </div> */}
+        </div> 
       </div>
     </section>
   );
