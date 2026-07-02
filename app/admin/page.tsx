@@ -23,6 +23,12 @@ export default function AdminPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
+  const [isNoticeError, setIsNoticeError] = useState(false);
+
+  const showNotice = (message: string, isError: boolean = false) => {
+    setNotice(message);
+    setIsNoticeError(isError);
+  };
 
   const [trusteeForm, setTrusteeForm] = useState({ name: '', position: '', bio: '', image: '' });
   const [leaderForm, setLeaderForm] = useState({ name: '', position: '', image: '' });
@@ -87,40 +93,60 @@ export default function AdminPage() {
   };
 
   const handleTrusteeSave = async () => {
+    showNotice('');
     const { error } = await supabase.from('trustees').insert([{ ...trusteeForm, display_order: trustees.length + 1 }]);
-    if (!error) {
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Trustee added successfully.');
       setTrusteeForm({ name: '', position: '', bio: '', image: '' });
       loadData();
     }
   };
 
   const handleLeaderSave = async () => {
+    showNotice('');
     const { error } = await supabase.from('leaders').insert([{ ...leaderForm, display_order: leaders.length + 1 }]);
-    if (!error) {
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Leader added successfully.');
       setLeaderForm({ name: '', position: '', image: '' });
       loadData();
     }
   };
 
   const handleEventSave = async () => {
+    showNotice('');
     const { error } = await supabase.from('events').insert([{ ...eventForm }]);
-    if (!error) {
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Event added successfully.');
       setEventForm({ title: '', date: '', category: '', location: '', description: '', image: '' });
       loadData();
     }
   };
 
   const handleNewsSave = async () => {
+    showNotice('');
     const { error } = await supabase.from('news').insert([{ ...newsForm }]);
-    if (!error) {
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('News item added successfully.');
       setNewsForm({ title: '', date: '', category: '', excerpt: '', content: '', image: '' });
       loadData();
     }
   };
 
   const handleProgrammeSave = async () => {
+    showNotice('');
     const { error } = await supabase.from('programmes').insert([{ ...programmeForm }]);
-    if (!error) {
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Programme added successfully.');
       setProgrammeForm({ title: '', icon: 'mdi:gavel', description: '' });
       loadData();
     }
@@ -134,20 +160,28 @@ export default function AdminPage() {
   };
 
   const updateAdminEmail = async () => {
-    setNotice('');
+    showNotice('');
     const { error } = await supabase.auth.updateUser({ email: settingsForm.email });
-    setNotice(error ? error.message : 'Email update requested. Check the new email inbox if confirmation is required.');
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Email update requested. Check the new email inbox if confirmation is required.');
+    }
   };
 
   const updateAdminPassword = async () => {
-    setNotice('');
+    showNotice('');
     const { error } = await supabase.auth.updateUser({ password: settingsForm.password });
-    setNotice(error ? error.message : 'Password updated.');
-    if (!error) setSettingsForm((current) => ({ ...current, password: '' }));
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Password updated successfully.');
+      setSettingsForm((current) => ({ ...current, password: '' }));
+    }
   };
 
   const addAdmin = async () => {
-    setNotice('');
+    showNotice('');
     const currentSession = session;
     const { error } = await supabase.auth.signUp({
       email: settingsForm.adminEmail,
@@ -162,8 +196,12 @@ export default function AdminPage() {
       });
     }
 
-    setNotice(error ? error.message : 'Admin account created. Confirmation may be required depending on Supabase settings.');
-    if (!error) setSettingsForm((current) => ({ ...current, adminName: '', adminEmail: '', adminPassword: '' }));
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice('Admin account created. Confirmation may be required depending on Supabase settings.');
+      setSettingsForm((current) => ({ ...current, adminName: '', adminEmail: '', adminPassword: '' }));
+    }
   };
 
   const stats = [
@@ -240,7 +278,7 @@ export default function AdminPage() {
           </section>
 
           {loading ? <p className="loading-note">Loading content...</p> : null}
-          {notice ? <p className="form-status">{notice}</p> : null}
+          {notice ? <p className={`form-status${isNoticeError ? ' error' : ''}`}>{notice}</p> : null}
 
           <section className="stats-grid" aria-label="Content summary">
             {stats.map((stat) => (
