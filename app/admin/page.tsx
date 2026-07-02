@@ -87,50 +87,70 @@ export default function AdminPage() {
   };
 
   const handleTrusteeSave = async () => {
+    setNotice('');
     const { error } = await supabase.from('trustees').insert([{ ...trusteeForm, display_order: trustees.length + 1 }]);
-    if (!error) {
-      setTrusteeForm({ name: '', position: '', bio: '', image: '' });
-      loadData();
+    if (error) {
+      setNotice(`Failed to add trustee: ${error.message}`);
+      return;
     }
+    setTrusteeForm({ name: '', position: '', bio: '', image: '' });
+    loadData();
   };
 
   const handleLeaderSave = async () => {
+    setNotice('');
     const { error } = await supabase.from('leaders').insert([{ ...leaderForm, display_order: leaders.length + 1 }]);
-    if (!error) {
-      setLeaderForm({ name: '', position: '', image: '' });
-      loadData();
+    if (error) {
+      setNotice(`Failed to add leader: ${error.message}`);
+      return;
     }
+    setLeaderForm({ name: '', position: '', image: '' });
+    loadData();
   };
 
   const handleEventSave = async () => {
+    setNotice('');
     const { error } = await supabase.from('events').insert([{ ...eventForm }]);
-    if (!error) {
-      setEventForm({ title: '', date: '', category: '', location: '', description: '', image: '' });
-      loadData();
+    if (error) {
+      setNotice(`Failed to add event: ${error.message}`);
+      return;
     }
+    setEventForm({ title: '', date: '', category: '', location: '', description: '', image: '' });
+    loadData();
   };
 
   const handleNewsSave = async () => {
+    setNotice('');
     const { error } = await supabase.from('news').insert([{ ...newsForm }]);
-    if (!error) {
-      setNewsForm({ title: '', date: '', category: '', excerpt: '', content: '', image: '' });
-      loadData();
+    if (error) {
+      setNotice(`Failed to add news: ${error.message}`);
+      return;
     }
+    setNewsForm({ title: '', date: '', category: '', excerpt: '', content: '', image: '' });
+    loadData();
   };
 
   const handleProgrammeSave = async () => {
+    setNotice('');
     const { error } = await supabase.from('programmes').insert([{ ...programmeForm }]);
-    if (!error) {
-      setProgrammeForm({ title: '', icon: 'mdi:gavel', description: '' });
-      loadData();
+    if (error) {
+      setNotice(`Failed to add programme: ${error.message}`);
+      return;
     }
+    setProgrammeForm({ title: '', icon: 'mdi:gavel', description: '' });
+    loadData();
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, setter: FileSetter) => {
+    setNotice('');
     const file = event.target.files?.[0];
     if (!file) return;
     const url = await uploadImage(file, 'uploads');
-    if (url) setter((prev: any) => ({ ...prev, image: url }));
+    if (!url) {
+      setNotice('Image upload failed. Check Supabase Storage bucket/policies.');
+      return;
+    }
+    setter((prev: any) => ({ ...prev, image: url }));
   };
 
   const updateAdminEmail = async () => {
