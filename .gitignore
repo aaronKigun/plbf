@@ -4,3 +4,4 @@ out
 bun.lockb
 *.log
 .DS_Store
+.env*
