@@ -71,12 +71,21 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setSettingsForm((current) => ({ ...current, email: data.session?.user.email || '' }));
-      setAuthLoading(false);
-      if (data.session) loadData();
-    });
+    const initAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setSession(data.session);
+        setSettingsForm((current) => ({ ...current, email: data.session?.user.email || '' }));
+        if (data.session) loadData();
+      } catch (error) {
+        console.error('Supabase auth initialization failed:', error);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    initAuth();
 
     const { data: subscriptionData } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
