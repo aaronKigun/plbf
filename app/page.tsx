@@ -4,39 +4,59 @@ import { useEffect, useState } from 'react';
 import HeroSection from '@/components/HeroSection';
 import Navbar from '@/components/Navbar';
 import SectionGrid from '@/components/SectionGrid';
+import SectionHeading from '@/components/SectionHeading';
 import LeadershipSection from '@/components/LeadershipSection';
+import GallerySection from '@/components/GallerySection';
+import VideosSection from '@/components/VideosSection';
 import MembershipSection from '@/components/MembershipSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import type { Trustee, Leader, EventItem, NewsItem, Programme } from '@/types/content';
+import { resolveHeading } from '@/lib/sectionHeadings';
+import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, SectionHeading as SectionHeadingType } from '@/types/content';
 
 export default function HomePage() {
   const [trustees, setTrustees] = useState<Trustee[]>([]);
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
-  const [programmes, setProgrammes] = useState<Programme[]>([]);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [sectionHeadings, setSectionHeadings] = useState<SectionHeadingType[]>([]);
 
   useEffect(() => {
     const loadContent = async () => {
-      const [{ data: trusteesData }, { data: leadersData }, { data: eventsData }, { data: newsData }, { data: programmesData }] = await Promise.all([
+      const [
+        { data: trusteesData },
+        { data: leadersData },
+        { data: eventsData },
+        { data: newsData },
+        { data: galleryData },
+        { data: videosData },
+        { data: headingsData }
+      ] = await Promise.all([
         supabase.from('trustees').select('*').order('display_order', { ascending: true }).limit(6),
         supabase.from('leaders').select('*').order('display_order', { ascending: true }).limit(6),
         supabase.from('events').select('*').order('date', { ascending: false }).limit(6),
         supabase.from('news').select('*').order('date', { ascending: false }).limit(6),
-        supabase.from('programmes').select('*').limit(6)
+        supabase.from('gallery_items').select('*').order('display_order', { ascending: true }).limit(12),
+        supabase.from('videos').select('*').order('display_order', { ascending: true }).limit(6),
+        supabase.from('section_headings').select('*')
       ]);
 
       setTrustees((trusteesData as Trustee[]) || []);
       setLeaders((leadersData as Leader[]) || []);
       setEvents((eventsData as EventItem[]) || []);
       setNews((newsData as NewsItem[]) || []);
-      setProgrammes((programmesData as Programme[]) || []);
+      setGallery((galleryData as GalleryItem[]) || []);
+      setVideos((videosData as VideoItem[]) || []);
+      setSectionHeadings((headingsData as SectionHeadingType[]) || []);
     };
 
     loadContent();
   }, []);
+
+  const heading = (key: string) => resolveHeading(key, sectionHeadings);
 
   const fallbackTrustees = [
     { name: 'Chief A. B. D. Jang', position: 'Chairman', image: '/images/Logo.jpg', bio: 'Guiding the forum with strategic leadership and legal insight.' },
@@ -81,7 +101,6 @@ export default function HomePage() {
   const displayLeaders = leaders.length ? leaders : fallbackLeaders;
   const displayEvents = events.length ? events : fallbackEvents;
   const displayNews = news.length ? news : fallbackNews;
-  const displayProgrammes = programmes.length ? programmes : fallbackProgrammes;
 
   return (
     <>
@@ -94,45 +113,33 @@ export default function HomePage() {
         />
 
         <section id="about" className="section">
-          <div className="section-heading">
-            <span className="section-eyebrow">About Us</span>
-            <h2>Upholding the Integrity of the Legal Profession</h2>
-          </div>
-          <p>
-            PLBF is a non-partisan association of legal practitioners working to promote professional excellence, legal education, and public welfare.
-          </p>
+          <SectionHeading
+            eyebrow={heading('about').eyebrow}
+            title={heading('about').title}
+            intro={heading('about').intro}
+          />
         </section>
 
         <section id="governance">
           <SectionGrid
-            title="Governance"
-            eyebrow="Foundation"
-            intro="The policies, standards, and working structures that guide the Forum's service to members and the public."
+            title={heading('governance').title}
+            eyebrow={heading('governance').eyebrow}
+            intro={heading('governance').intro}
             items={governanceItems}
           />
         </section>
-        <section id="trustees">
-          <SectionGrid
-            title="Board of Trustees"
-            eyebrow="Pillar of Guidance"
-            intro="Distinguished senior members who provide strategic direction, wisdom, and steadfast support to the Forum."
-            items={displayTrustees.map((item) => ({
-              title: item.name,
-              subtitle: item.position,
-              image: item.image || '/images/Logo.jpg',
-              description: item.bio || 'Community leadership and legal service.'
-            }))}
-            tone="dark"
-          />
-        </section>
+
+        <LeadershipSection leaders={displayLeaders} heading={heading('leadership')} />
+
         <section id="services">
           <SectionGrid
-            title="Our Mandate & Programmes"
-            eyebrow="What We Do"
-            intro="Through structured programmes and sustained advocacy, we work to elevate legal practice and make justice more accessible."
-            items={displayProgrammes.map((item) => ({ title: item.title, description: item.description }))}
+            title={heading('programmes').title}
+            eyebrow={heading('programmes').eyebrow}
+            intro={heading('programmes').intro}
+            items={fallbackProgrammes}
           />
         </section>
+
         <section className="quote-section" aria-label="Guiding principle">
           <div className="quote-inner">
             <span className="quote-mark" aria-hidden="true">"</span>
@@ -143,11 +150,12 @@ export default function HomePage() {
             <p>Our Guiding Principle</p>
           </div>
         </section>
+
         <section id="events">
           <SectionGrid
-            title="Events"
-            eyebrow="Upcoming & Recent"
-            intro="Forums, clinics, meetings, and professional gatherings that keep the PLBF community connected."
+            title={heading('events').title}
+            eyebrow={heading('events').eyebrow}
+            intro={heading('events').intro}
             items={displayEvents.map((item) => ({
               title: item.title,
               subtitle: item.date,
@@ -155,14 +163,30 @@ export default function HomePage() {
               description: item.description || 'Upcoming event'
             }))}
             tone="white"
+            variant="media"
           />
         </section>
-        <LeadershipSection leaders={displayLeaders} />
+
+        <section id="trustees">
+          <SectionGrid
+            title={heading('trustees').title}
+            eyebrow={heading('trustees').eyebrow}
+            intro={heading('trustees').intro}
+            items={displayTrustees.map((item) => ({
+              title: item.name,
+              subtitle: item.position,
+              image: item.image || '/images/Logo.jpg',
+              description: item.bio || 'Community leadership and legal service.'
+            }))}
+            variant="profile"
+          />
+        </section>
+
         <section id="news-updates">
           <SectionGrid
-            title="News & Updates"
-            eyebrow="Latest"
-            intro="Announcements, reports, and updates from the Plateau Lawyers Bar Forum."
+            title={heading('news').title}
+            eyebrow={heading('news').eyebrow}
+            intro={heading('news').intro}
             items={displayNews.map((item) => {
               const entry = item as NewsItem & { category?: string; excerpt?: string; content?: string };
               return {
@@ -172,10 +196,15 @@ export default function HomePage() {
                 description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
               };
             })}
+            variant="media"
           />
         </section>
-        <MembershipSection />
-        <ContactSection />
+
+        <GallerySection items={gallery} heading={heading('gallery')} />
+        <VideosSection items={videos} heading={heading('videos')} />
+
+        <MembershipSection heading={heading('membership')} />
+        <ContactSection heading={heading('contact')} />
       </main>
       <Footer />
     </>

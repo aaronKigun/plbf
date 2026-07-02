@@ -9,6 +9,9 @@ const navItems = [
   { href: '#executives', label: 'Leadership' },
   { href: '#services', label: 'Programmes' },
   { href: '#events', label: 'Events' },
+  { href: '#news-updates', label: 'News' },
+  { href: '#gallery', label: 'Gallery' },
+  { href: '#videos', label: 'Videos' },
   { href: '#membership', label: 'Membership' },
   { href: '#contact', label: 'Contact' }
 ];
@@ -25,15 +28,17 @@ export default function Navbar() {
         </a>
         <button
           type="button"
-          className="menu-toggle"
-          aria-label="Toggle menu"
+          className={`menu-toggle${open ? ' is-open' : ''}`}
+          aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           aria-controls="primary-navigation"
           onClick={() => setOpen((current) => !current)}
         >
-          <span />
-          <span />
-          <span />
+          <span className="menu-toggle-box" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
         </button>
         <div id="primary-navigation" className="nav-links">
           {navItems.map((item) => (

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase, uploadImage } from '@/lib/supabase';
-import type { Trustee, Leader, EventItem, NewsItem, Programme, Member, ContactMessage } from '@/types/content';
+import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, SectionHeading, Member, ContactMessage } from '@/types/content';
+import { DEFAULT_SECTION_HEADINGS } from '@/lib/sectionHeadings';
 
 type FileSetter = (value: (prev: any) => any) => void;
 
@@ -18,7 +19,9 @@ export default function AdminPage() {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
-  const [programmes, setProgrammes] = useState<Programme[]>([]);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [sectionHeadings, setSectionHeadings] = useState<SectionHeading[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,17 +37,27 @@ export default function AdminPage() {
   const [leaderForm, setLeaderForm] = useState({ name: '', position: '', image: '' });
   const [eventForm, setEventForm] = useState({ title: '', date: '', category: '', location: '', description: '', image: '' });
   const [newsForm, setNewsForm] = useState({ title: '', date: '', category: '', excerpt: '', content: '', image: '' });
-  const [programmeForm, setProgrammeForm] = useState({ title: '', icon: 'mdi:gavel', description: '' });
+  const [galleryForm, setGalleryForm] = useState({ title: '', image: '', caption: '' });
+  const [videoForm, setVideoForm] = useState({ title: '', url: '', description: '' });
   const [settingsForm, setSettingsForm] = useState({ email: '', password: '', adminName: '', adminEmail: '', adminPassword: '' });
+
+  const [editingTrusteeId, setEditingTrusteeId] = useState<number | null>(null);
+  const [editingLeaderId, setEditingLeaderId] = useState<number | null>(null);
+  const [editingEventId, setEditingEventId] = useState<number | null>(null);
+  const [editingNewsId, setEditingNewsId] = useState<number | null>(null);
+  const [editingGalleryId, setEditingGalleryId] = useState<number | null>(null);
+  const [editingVideoId, setEditingVideoId] = useState<number | null>(null);
 
   const loadData = async () => {
     setLoading(true);
-    const [trusteesResult, leadersResult, eventsResult, newsResult, programmesResult, membersResult, messagesResult] = await Promise.all([
+    const [trusteesResult, leadersResult, eventsResult, newsResult, galleryResult, videosResult, headingsResult, membersResult, messagesResult] = await Promise.all([
       supabase.from('trustees').select('*').order('display_order', { ascending: true }),
       supabase.from('leaders').select('*').order('display_order', { ascending: true }),
       supabase.from('events').select('*').order('date', { ascending: false }),
       supabase.from('news').select('*').order('date', { ascending: false }),
-      supabase.from('programmes').select('*'),
+      supabase.from('gallery_items').select('*').order('display_order', { ascending: true }),
+      supabase.from('videos').select('*').order('display_order', { ascending: true }),
+      supabase.from('section_headings').select('*'),
       supabase.from('members').select('*').order('created_at', { ascending: false }),
       supabase.from('contact_messages').select('*').order('created_at', { ascending: false })
     ]);
@@ -53,7 +66,9 @@ export default function AdminPage() {
     setLeaders((leadersResult.data as Leader[]) || []);
     setEvents((eventsResult.data as EventItem[]) || []);
     setNews((newsResult.data as NewsItem[]) || []);
-    setProgrammes((programmesResult.data as Programme[]) || []);
+    setGallery((galleryResult.data as GalleryItem[]) || []);
+    setVideos((videosResult.data as VideoItem[]) || []);
+    setSectionHeadings((headingsResult.data as SectionHeading[]) || []);
     setMembers((membersResult.data as Member[]) || []);
     setMessages((messagesResult.data as ContactMessage[]) || []);
     setLoading(false);
@@ -94,60 +109,124 @@ export default function AdminPage() {
 
   const handleTrusteeSave = async () => {
     showNotice('');
-    const { error } = await supabase.from('trustees').insert([{ ...trusteeForm, display_order: trustees.length + 1 }]);
+    const { error } = editingTrusteeId
+      ? await supabase.from('trustees').update({ ...trusteeForm }).eq('id', editingTrusteeId)
+      : await supabase.from('trustees').insert([{ ...trusteeForm, display_order: trustees.length + 1 }]);
     if (error) {
       showNotice(error.message, true);
     } else {
-      showNotice('Trustee added successfully.');
+      showNotice(editingTrusteeId ? 'Trustee updated successfully.' : 'Trustee added successfully.');
       setTrusteeForm({ name: '', position: '', bio: '', image: '' });
+      setEditingTrusteeId(null);
       loadData();
     }
   };
 
   const handleLeaderSave = async () => {
     showNotice('');
-    const { error } = await supabase.from('leaders').insert([{ ...leaderForm, display_order: leaders.length + 1 }]);
+    const { error } = editingLeaderId
+      ? await supabase.from('leaders').update({ ...leaderForm }).eq('id', editingLeaderId)
+      : await supabase.from('leaders').insert([{ ...leaderForm, display_order: leaders.length + 1 }]);
     if (error) {
       showNotice(error.message, true);
     } else {
-      showNotice('Leader added successfully.');
+      showNotice(editingLeaderId ? 'Leader updated successfully.' : 'Leader added successfully.');
       setLeaderForm({ name: '', position: '', image: '' });
+      setEditingLeaderId(null);
       loadData();
     }
   };
 
   const handleEventSave = async () => {
     showNotice('');
-    const { error } = await supabase.from('events').insert([{ ...eventForm }]);
+    const { error } = editingEventId
+      ? await supabase.from('events').update({ ...eventForm }).eq('id', editingEventId)
+      : await supabase.from('events').insert([{ ...eventForm }]);
     if (error) {
       showNotice(error.message, true);
     } else {
-      showNotice('Event added successfully.');
+      showNotice(editingEventId ? 'Event updated successfully.' : 'Event added successfully.');
       setEventForm({ title: '', date: '', category: '', location: '', description: '', image: '' });
+      setEditingEventId(null);
       loadData();
     }
   };
 
   const handleNewsSave = async () => {
     showNotice('');
-    const { error } = await supabase.from('news').insert([{ ...newsForm }]);
+    const { error } = editingNewsId
+      ? await supabase.from('news').update({ ...newsForm }).eq('id', editingNewsId)
+      : await supabase.from('news').insert([{ ...newsForm }]);
     if (error) {
       showNotice(error.message, true);
     } else {
-      showNotice('News item added successfully.');
+      showNotice(editingNewsId ? 'News item updated successfully.' : 'News item added successfully.');
       setNewsForm({ title: '', date: '', category: '', excerpt: '', content: '', image: '' });
+      setEditingNewsId(null);
       loadData();
     }
   };
 
-  const handleProgrammeSave = async () => {
+  const handleGallerySave = async () => {
     showNotice('');
-    const { error } = await supabase.from('programmes').insert([{ ...programmeForm }]);
+    if (!galleryForm.image) {
+      showNotice('Please upload an image before saving.', true);
+      return;
+    }
+    const { error } = editingGalleryId
+      ? await supabase.from('gallery_items').update({ ...galleryForm }).eq('id', editingGalleryId)
+      : await supabase.from('gallery_items').insert([{ ...galleryForm, display_order: gallery.length + 1 }]);
     if (error) {
       showNotice(error.message, true);
     } else {
-      showNotice('Programme added successfully.');
-      setProgrammeForm({ title: '', icon: 'mdi:gavel', description: '' });
+      showNotice(editingGalleryId ? 'Gallery item updated successfully.' : 'Gallery item added successfully.');
+      setGalleryForm({ title: '', image: '', caption: '' });
+      setEditingGalleryId(null);
+      loadData();
+    }
+  };
+
+  const handleVideoSave = async () => {
+    showNotice('');
+    const { error } = editingVideoId
+      ? await supabase.from('videos').update({ ...videoForm }).eq('id', editingVideoId)
+      : await supabase.from('videos').insert([{ ...videoForm, display_order: videos.length + 1 }]);
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice(editingVideoId ? 'Video updated successfully.' : 'Video added successfully.');
+      setVideoForm({ title: '', url: '', description: '' });
+      setEditingVideoId(null);
+      loadData();
+    }
+  };
+
+  const saveSectionHeading = async (heading: SectionHeading) => {
+    showNotice('');
+    const { error } = await supabase.from('section_headings').upsert({
+      key: heading.key,
+      eyebrow: heading.eyebrow || null,
+      title: heading.title,
+      title_highlight: heading.title_highlight || null,
+      intro: heading.intro || null
+    });
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice(`${heading.key} heading saved successfully.`);
+      loadData();
+    }
+  };
+
+  const deleteRecord = async (table: string, id: number, label: string, onDone: () => void) => {
+    if (!window.confirm(`Delete this ${label}?`)) return;
+    showNotice('');
+    const { error } = await supabase.from(table).delete().eq('id', id);
+    if (error) {
+      showNotice(error.message, true);
+    } else {
+      showNotice(`${label} deleted successfully.`);
+      onDone();
       loadData();
     }
   };
@@ -207,12 +286,26 @@ export default function AdminPage() {
   const stats = [
     { label: 'Events', value: events.length, icon: 'E' },
     { label: 'Leaders', value: leaders.length, icon: 'L' },
-    { label: 'Programmes', value: programmes.length, icon: 'P' },
+    { label: 'Gallery', value: gallery.length, icon: 'G' },
+    { label: 'Videos', value: videos.length, icon: 'V' },
     { label: 'Trustees', value: trustees.length, icon: 'T' },
     { label: 'News', value: news.length, icon: 'N' },
     { label: 'Members Paid', value: members.filter((member) => member.payment_status === 'paid' || member.status === 'paid').length, icon: 'M' },
     { label: 'Messages', value: messages.length, icon: '@' }
   ];
+
+  const headingValue = (key: string): SectionHeading => {
+    const saved = sectionHeadings.find((item) => item.key === key);
+    return saved || DEFAULT_SECTION_HEADINGS[key];
+  };
+
+  const updateHeadingField = (key: string, field: keyof SectionHeading, value: string) => {
+    setSectionHeadings((current) => {
+      const existing = current.find((item) => item.key === key) || { ...DEFAULT_SECTION_HEADINGS[key] };
+      const others = current.filter((item) => item.key !== key);
+      return [...others, { ...existing, [field]: value }];
+    });
+  };
 
   if (authLoading) {
     return <main className="login-screen"><p className="loading-note">Loading admin...</p></main>;
@@ -246,11 +339,13 @@ export default function AdminPage() {
 
         <nav className="admin-nav" aria-label="Admin sections">
           <a className="active" href="#admin-dashboard">Dashboard</a>
+          <a href="#admin-headings">Section Headings</a>
           <a href="#admin-trustees">Trustees</a>
           <a href="#admin-leaders">Leadership</a>
           <a href="#admin-events">Events</a>
           <a href="#admin-news">News</a>
-          <a href="#admin-programmes">Programmes</a>
+          <a href="#admin-gallery">Gallery</a>
+          <a href="#admin-videos">Videos</a>
           <a href="#admin-members">Members</a>
           <a href="#admin-messages">Messages</a>
           <a href="#admin-settings">Settings</a>
@@ -290,35 +385,85 @@ export default function AdminPage() {
           </section>
 
           <div className="admin-grid">
+            <section id="admin-headings" className="admin-panel wide">
+              <PanelTitle title="Section Headings" />
+              <div className="panel-body">
+                <p className="panel-note">Update the eyebrow, title, highlighted text, and intro shown on each homepage section. The hero section is not managed here.</p>
+                <div className="headings-grid">
+                  {Object.values(DEFAULT_SECTION_HEADINGS).map((defaults) => {
+                    const current = headingValue(defaults.key);
+                    return (
+                      <article key={defaults.key} className="heading-card">
+                        <h3>{defaults.key}</h3>
+                        <div className="admin-form">
+                          <Field label="Eyebrow" id={`${defaults.key}-eyebrow`}><input id={`${defaults.key}-eyebrow`} value={current.eyebrow || ''} onChange={(e) => updateHeadingField(defaults.key, 'eyebrow', e.target.value)} placeholder="Eyebrow" /></Field>
+                          <Field label="Title" id={`${defaults.key}-title`}><input id={`${defaults.key}-title`} value={current.title} onChange={(e) => updateHeadingField(defaults.key, 'title', e.target.value)} placeholder="Section title" /></Field>
+                          <Field label="Highlighted Text" id={`${defaults.key}-highlight`}><input id={`${defaults.key}-highlight`} value={current.title_highlight || ''} onChange={(e) => updateHeadingField(defaults.key, 'title_highlight', e.target.value)} placeholder="Optional gold text" /></Field>
+                          <Field label="Intro" id={`${defaults.key}-intro`} full><textarea id={`${defaults.key}-intro`} value={current.intro || ''} onChange={(e) => updateHeadingField(defaults.key, 'intro', e.target.value)} placeholder="Section intro" /></Field>
+                          <div className="form-actions"><button className="btn btn-gold" type="button" onClick={() => saveSectionHeading(current)}>Save {defaults.key}</button></div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+
             <section id="admin-trustees" className="admin-panel">
-              <PanelTitle title="Board of Trustees" />
+              <PanelTitle title="Board of Trustees" viewHref="/#trustees" />
               <div className="panel-body">
                 <div className="admin-form">
                   <Field label="Name" id="trustee-name"><input id="trustee-name" value={trusteeForm.name} onChange={(e) => setTrusteeForm({ ...trusteeForm, name: e.target.value })} placeholder="Full name" /></Field>
                   <Field label="Position" id="trustee-position"><input id="trustee-position" value={trusteeForm.position} onChange={(e) => setTrusteeForm({ ...trusteeForm, position: e.target.value })} placeholder="Position" /></Field>
                   <Field label="Short Bio" id="trustee-bio" full><textarea id="trustee-bio" value={trusteeForm.bio} onChange={(e) => setTrusteeForm({ ...trusteeForm, bio: e.target.value })} placeholder="Brief description" /></Field>
                   <Field label="Photo" id="trustee-file" full><input id="trustee-file" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setTrusteeForm)} /></Field>
-                  <div className="form-actions"><button className="btn btn-gold" type="button" onClick={handleTrusteeSave}>Add Trustee</button></div>
+                  <div className="form-actions">
+                    {editingTrusteeId ? <button className="btn btn-outline" type="button" onClick={() => { setTrusteeForm({ name: '', position: '', bio: '', image: '' }); setEditingTrusteeId(null); }}>Cancel</button> : null}
+                    <button className="btn btn-gold" type="button" onClick={handleTrusteeSave}>{editingTrusteeId ? 'Update Trustee' : 'Add Trustee'}</button>
+                  </div>
                 </div>
               </div>
-              <AdminTable headings={['Image', 'Name', 'Position']} emptyText="No trustees added yet." rows={trustees.map((item) => [<AdminImage key={`${item.name}-image`} image={item.image} name={item.name} />, item.name, item.position])} />
+              <AdminTable
+                headings={['Image', 'Name', 'Position']}
+                emptyText="No trustees added yet."
+                rows={trustees.map((item) => [<AdminImage key={`${item.name}-image`} image={item.image} name={item.name} />, item.name, item.position])}
+                actions={(rowIndex) => (
+                  <RowActions
+                    onEdit={() => { const item = trustees[rowIndex]; setEditingTrusteeId(item.id!); setTrusteeForm({ name: item.name, position: item.position, bio: item.bio || '', image: item.image || '' }); }}
+                    onDelete={() => deleteRecord('trustees', trustees[rowIndex].id!, 'trustee', () => { setEditingTrusteeId(null); setTrusteeForm({ name: '', position: '', bio: '', image: '' }); })}
+                  />
+                )}
+              />
             </section>
 
             <section id="admin-leaders" className="admin-panel">
-              <PanelTitle title="Leadership" />
+              <PanelTitle title="Leadership" viewHref="/#executives" />
               <div className="panel-body">
                 <div className="admin-form">
                   <Field label="Name" id="leader-name"><input id="leader-name" value={leaderForm.name} onChange={(e) => setLeaderForm({ ...leaderForm, name: e.target.value })} placeholder="Full name" /></Field>
                   <Field label="Position" id="leader-position"><input id="leader-position" value={leaderForm.position} onChange={(e) => setLeaderForm({ ...leaderForm, position: e.target.value })} placeholder="Position" /></Field>
                   <Field label="Photo" id="leader-file" full><input id="leader-file" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setLeaderForm)} /></Field>
-                  <div className="form-actions"><button className="btn btn-gold" type="button" onClick={handleLeaderSave}>Add Leader</button></div>
+                  <div className="form-actions">
+                    {editingLeaderId ? <button className="btn btn-outline" type="button" onClick={() => { setLeaderForm({ name: '', position: '', image: '' }); setEditingLeaderId(null); }}>Cancel</button> : null}
+                    <button className="btn btn-gold" type="button" onClick={handleLeaderSave}>{editingLeaderId ? 'Update Leader' : 'Add Leader'}</button>
+                  </div>
                 </div>
               </div>
-              <AdminTable headings={['Image', 'Name', 'Position']} emptyText="No leaders added yet." rows={leaders.map((item) => [<AdminImage key={`${item.name}-image`} image={item.image} name={item.name} />, item.name, item.position])} />
+              <AdminTable
+                headings={['Image', 'Name', 'Position']}
+                emptyText="No leaders added yet."
+                rows={leaders.map((item) => [<AdminImage key={`${item.name}-image`} image={item.image} name={item.name} />, item.name, item.position])}
+                actions={(rowIndex) => (
+                  <RowActions
+                    onEdit={() => { const item = leaders[rowIndex]; setEditingLeaderId(item.id!); setLeaderForm({ name: item.name, position: item.position, image: item.image || '' }); }}
+                    onDelete={() => deleteRecord('leaders', leaders[rowIndex].id!, 'leader', () => { setEditingLeaderId(null); setLeaderForm({ name: '', position: '', image: '' }); })}
+                  />
+                )}
+              />
             </section>
 
             <section id="admin-events" className="admin-panel wide">
-              <PanelTitle title="Events" />
+              <PanelTitle title="Events" viewHref="/#events" />
               <div className="panel-body">
                 <div className="admin-form">
                   <Field label="Title" id="event-title"><input id="event-title" value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} placeholder="Event title" /></Field>
@@ -327,14 +472,28 @@ export default function AdminPage() {
                   <Field label="Location" id="event-location"><input id="event-location" value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} placeholder="Location" /></Field>
                   <Field label="Description" id="event-description" full><textarea id="event-description" value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} placeholder="Brief description" /></Field>
                   <Field label="Image" id="event-file" full><input id="event-file" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setEventForm)} /></Field>
-                  <div className="form-actions"><button className="btn btn-gold" type="button" onClick={handleEventSave}>Add Event</button></div>
+                  <div className="form-actions">
+                    {editingEventId ? <button className="btn btn-outline" type="button" onClick={() => { setEventForm({ title: '', date: '', category: '', location: '', description: '', image: '' }); setEditingEventId(null); }}>Cancel</button> : null}
+                    <button className="btn btn-gold" type="button" onClick={handleEventSave}>{editingEventId ? 'Update Event' : 'Add Event'}</button>
+                  </div>
                 </div>
               </div>
-              <AdminTable headings={['Image', 'Title', 'Date', 'Location', 'Category']} emptyText="No events added yet." rows={events.map((item) => [<AdminImage key={`${item.title}-image`} image={item.image} name={item.title} />, item.title, item.date, item.location, item.category])} badgeColumn={4} />
+              <AdminTable
+                headings={['Image', 'Title', 'Date', 'Location', 'Category']}
+                emptyText="No events added yet."
+                rows={events.map((item) => [<AdminImage key={`${item.title}-image`} image={item.image} name={item.title} />, item.title, item.date, item.location, item.category])}
+                badgeColumn={4}
+                actions={(rowIndex) => (
+                  <RowActions
+                    onEdit={() => { const item = events[rowIndex]; setEditingEventId(item.id!); setEventForm({ title: item.title, date: item.date, category: item.category, location: item.location, description: item.description, image: item.image || '' }); }}
+                    onDelete={() => deleteRecord('events', events[rowIndex].id!, 'event', () => { setEditingEventId(null); setEventForm({ title: '', date: '', category: '', location: '', description: '', image: '' }); })}
+                  />
+                )}
+              />
             </section>
 
             <section id="admin-news" className="admin-panel wide">
-              <PanelTitle title="News" />
+              <PanelTitle title="News" viewHref="/#news-updates" />
               <div className="panel-body">
                 <div className="admin-form">
                   <Field label="Title" id="news-title"><input id="news-title" value={newsForm.title} onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })} placeholder="News title" /></Field>
@@ -343,23 +502,76 @@ export default function AdminPage() {
                   <Field label="Excerpt" id="news-excerpt" full><textarea id="news-excerpt" value={newsForm.excerpt} onChange={(e) => setNewsForm({ ...newsForm, excerpt: e.target.value })} placeholder="Short summary" /></Field>
                   <Field label="Content" id="news-content" full><textarea id="news-content" value={newsForm.content} onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })} placeholder="Full article" /></Field>
                   <Field label="Image" id="news-file" full><input id="news-file" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewsForm)} /></Field>
-                  <div className="form-actions"><button className="btn btn-gold" type="button" onClick={handleNewsSave}>Add News</button></div>
+                  <div className="form-actions">
+                    {editingNewsId ? <button className="btn btn-outline" type="button" onClick={() => { setNewsForm({ title: '', date: '', category: '', excerpt: '', content: '', image: '' }); setEditingNewsId(null); }}>Cancel</button> : null}
+                    <button className="btn btn-gold" type="button" onClick={handleNewsSave}>{editingNewsId ? 'Update News' : 'Add News'}</button>
+                  </div>
                 </div>
               </div>
-              <AdminTable headings={['Image', 'Title', 'Date', 'Category']} emptyText="No news added yet." rows={news.map((item) => [<AdminImage key={`${item.title}-image`} image={item.image} name={item.title} />, item.title, item.date, item.category])} badgeColumn={3} />
+              <AdminTable
+                headings={['Image', 'Title', 'Date', 'Category']}
+                emptyText="No news added yet."
+                rows={news.map((item) => [<AdminImage key={`${item.title}-image`} image={item.image} name={item.title} />, item.title, item.date, item.category])}
+                badgeColumn={3}
+                actions={(rowIndex) => (
+                  <RowActions
+                    onEdit={() => { const item = news[rowIndex]; setEditingNewsId(item.id!); setNewsForm({ title: item.title, date: item.date, category: item.category, excerpt: item.excerpt, content: item.content || '', image: item.image || '' }); }}
+                    onDelete={() => deleteRecord('news', news[rowIndex].id!, 'news item', () => { setEditingNewsId(null); setNewsForm({ title: '', date: '', category: '', excerpt: '', content: '', image: '' }); })}
+                  />
+                )}
+              />
             </section>
 
-            <section id="admin-programmes" className="admin-panel wide">
-              <PanelTitle title="Programmes" />
+            <section id="admin-gallery" className="admin-panel wide">
+              <PanelTitle title="Gallery" viewHref="/#gallery" />
               <div className="panel-body">
                 <div className="admin-form">
-                  <Field label="Title" id="programme-title"><input id="programme-title" value={programmeForm.title} onChange={(e) => setProgrammeForm({ ...programmeForm, title: e.target.value })} placeholder="Programme title" /></Field>
-                  <Field label="Icon" id="programme-icon"><input id="programme-icon" value={programmeForm.icon} onChange={(e) => setProgrammeForm({ ...programmeForm, icon: e.target.value })} placeholder="Icon name" /></Field>
-                  <Field label="Description" id="programme-description" full><textarea id="programme-description" value={programmeForm.description} onChange={(e) => setProgrammeForm({ ...programmeForm, description: e.target.value })} placeholder="Programme description" /></Field>
-                  <div className="form-actions"><button className="btn btn-gold" type="button" onClick={handleProgrammeSave}>Add Programme</button></div>
+                  <Field label="Title" id="gallery-title"><input id="gallery-title" value={galleryForm.title} onChange={(e) => setGalleryForm({ ...galleryForm, title: e.target.value })} placeholder="Image title" /></Field>
+                  <Field label="Caption" id="gallery-caption"><input id="gallery-caption" value={galleryForm.caption} onChange={(e) => setGalleryForm({ ...galleryForm, caption: e.target.value })} placeholder="Optional caption" /></Field>
+                  <Field label="Image" id="gallery-file" full><input id="gallery-file" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setGalleryForm)} /></Field>
+                  <div className="form-actions">
+                    {editingGalleryId ? <button className="btn btn-outline" type="button" onClick={() => { setGalleryForm({ title: '', image: '', caption: '' }); setEditingGalleryId(null); }}>Cancel</button> : null}
+                    <button className="btn btn-gold" type="button" onClick={handleGallerySave}>{editingGalleryId ? 'Update Image' : 'Add Image'}</button>
+                  </div>
                 </div>
               </div>
-              <AdminTable headings={['Title', 'Description']} emptyText="No programmes added yet." rows={programmes.map((item) => [item.title, item.description])} />
+              <AdminTable
+                headings={['Image', 'Title', 'Caption']}
+                emptyText="No gallery images added yet."
+                rows={gallery.map((item) => [<AdminImage key={`${item.title}-image`} image={item.image} name={item.title || 'Gallery image'} />, item.title || 'Untitled', item.caption || 'No caption'])}
+                actions={(rowIndex) => (
+                  <RowActions
+                    onEdit={() => { const item = gallery[rowIndex]; setEditingGalleryId(item.id!); setGalleryForm({ title: item.title || '', image: item.image, caption: item.caption || '' }); }}
+                    onDelete={() => deleteRecord('gallery_items', gallery[rowIndex].id!, 'gallery image', () => { setEditingGalleryId(null); setGalleryForm({ title: '', image: '', caption: '' }); })}
+                  />
+                )}
+              />
+            </section>
+
+            <section id="admin-videos" className="admin-panel wide">
+              <PanelTitle title="Videos" viewHref="/#videos" />
+              <div className="panel-body">
+                <div className="admin-form">
+                  <Field label="Title" id="video-title"><input id="video-title" value={videoForm.title} onChange={(e) => setVideoForm({ ...videoForm, title: e.target.value })} placeholder="Video title" /></Field>
+                  <Field label="YouTube URL" id="video-url" full><input id="video-url" value={videoForm.url} onChange={(e) => setVideoForm({ ...videoForm, url: e.target.value })} placeholder="https://www.youtube.com/watch?v=..." /></Field>
+                  <Field label="Description" id="video-description" full><textarea id="video-description" value={videoForm.description} onChange={(e) => setVideoForm({ ...videoForm, description: e.target.value })} placeholder="Short description" /></Field>
+                  <div className="form-actions">
+                    {editingVideoId ? <button className="btn btn-outline" type="button" onClick={() => { setVideoForm({ title: '', url: '', description: '' }); setEditingVideoId(null); }}>Cancel</button> : null}
+                    <button className="btn btn-gold" type="button" onClick={handleVideoSave}>{editingVideoId ? 'Update Video' : 'Add Video'}</button>
+                  </div>
+                </div>
+              </div>
+              <AdminTable
+                headings={['Title', 'URL', 'Description']}
+                emptyText="No videos added yet."
+                rows={videos.map((item) => [item.title, item.url, item.description || 'No description'])}
+                actions={(rowIndex) => (
+                  <RowActions
+                    onEdit={() => { const item = videos[rowIndex]; setEditingVideoId(item.id!); setVideoForm({ title: item.title, url: item.url, description: item.description || '' }); }}
+                    onDelete={() => deleteRecord('videos', videos[rowIndex].id!, 'video', () => { setEditingVideoId(null); setVideoForm({ title: '', url: '', description: '' }); })}
+                  />
+                )}
+              />
             </section>
 
             <section id="admin-members" className="admin-panel wide">
@@ -394,8 +606,13 @@ export default function AdminPage() {
   );
 }
 
-function PanelTitle({ title }: { title: string }) {
-  return <div className="panel-header"><h2>{title}</h2></div>;
+function PanelTitle({ title, viewHref }: { title: string; viewHref?: string }) {
+  return (
+    <div className="panel-header">
+      <h2>{title}</h2>
+      {viewHref ? <a className="panel-view-site" href={viewHref} target="_blank" rel="noopener noreferrer">View on site</a> : null}
+    </div>
+  );
 }
 
 function Field({ label, id, full = false, children }: { label: string; id: string; full?: boolean; children: ReactNode }) {
@@ -406,13 +623,13 @@ function AdminImage({ image, name }: { image?: string; name: string }) {
   return <img className="admin-table-image" src={image || '/images/Logo.jpg'} alt={name} />;
 }
 
-function AdminTable({ headings, rows, emptyText, badgeColumn }: { headings: string[]; rows: ReactNode[][]; emptyText: string; badgeColumn?: number }) {
+function AdminTable({ headings, rows, emptyText, badgeColumn, actions }: { headings: string[]; rows: ReactNode[][]; emptyText: string; badgeColumn?: number; actions?: (rowIndex: number) => ReactNode }) {
   if (!rows.length) return <div className="empty-state">{emptyText}</div>;
 
   return (
     <div className="table-wrapper">
       <table className="admin-table">
-        <thead><tr>{headings.map((heading) => <th key={heading}>{heading}</th>)}</tr></thead>
+        <thead><tr>{headings.map((heading) => <th key={heading}>{heading}</th>)}{actions ? <th>Actions</th> : null}</tr></thead>
         <tbody>
           {rows.map((row, rowIndex) => (
             <tr key={rowIndex}>
@@ -421,10 +638,20 @@ function AdminTable({ headings, rows, emptyText, badgeColumn }: { headings: stri
                   {badgeColumn === cellIndex ? <span className="table-badge">{cell || 'Pending'}</span> : cell || 'Not set'}
                 </td>
               ))}
+              {actions ? <td className="table-actions">{actions(rowIndex)}</td> : null}
             </tr>
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
+  return (
+    <div className="row-actions">
+      <button className="btn-text" type="button" onClick={onEdit}>Edit</button>
+      <button className="btn-text danger" type="button" onClick={onDelete}>Delete</button>
     </div>
   );
 }

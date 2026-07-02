@@ -1,16 +1,17 @@
 type HeroSectionProps = {
+  eyebrow?: string;
   title: string;
   subtitle: string;
   description: string;
 };
 
-export default function HeroSection({ title, subtitle, description }: HeroSectionProps) {
+export default function HeroSection({ eyebrow = 'Advancing Justice on the Plateau', title, subtitle, description }: HeroSectionProps) {
   return (
     <section className="hero" id="hero">
       <div className="hero-overlay" />
       <div className="hero-content">
         <div className="hero-copy">
-          <p className="eyebrow">Advancing Justice on the Plateau</p>
+          <p className="eyebrow">{eyebrow}</p>
           <h1>{title}</h1>
           <p className="subtitle">{subtitle}</p>
           <p>{description}</p>

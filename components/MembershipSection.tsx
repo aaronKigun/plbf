@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import SectionHeading from '@/components/SectionHeading';
+import type { SectionHeading as SectionHeadingType } from '@/types/content';
 
 const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
 
@@ -22,7 +24,7 @@ function loadScript(src: string, id: string) {
   });
 }
 
-export default function MembershipSection() {
+export default function MembershipSection({ heading }: { heading: SectionHeadingType }) {
   const [form, setForm] = useState({
     full_name: '',
     email: '',
@@ -108,13 +110,12 @@ export default function MembershipSection() {
 
   return (
     <section id="membership" className="section section-alt">
-      <div className="section-heading">
-        <span className="section-eyebrow">Join Us</span>
-        <h2>
-          Membership <span>& Dues</span>
-        </h2>
-      </div>
-      <p>Join the Plateau Lawyers Bar Forum and pay your dues securely. Successful payments are saved in the membership database as paid.</p>
+      <SectionHeading
+        eyebrow={heading.eyebrow}
+        title={heading.title}
+        titleHighlight={heading.title_highlight}
+        intro={heading.intro}
+      />
       <form className="form-card" onSubmit={handleSubmit}>
         <label htmlFor="member-name">Full Name</label>
         <input id="member-name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Enter your full name" required />

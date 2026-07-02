@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import SectionHeading from '@/components/SectionHeading';
+import type { SectionHeading as SectionHeadingType } from '@/types/content';
 
 const emailJsPublicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '';
 const emailJsServiceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
@@ -24,7 +26,7 @@ function loadScript(src: string, id: string) {
   });
 }
 
-export default function ContactSection() {
+export default function ContactSection({ heading }: { heading: SectionHeadingType }) {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState('');
   const [sending, setSending] = useState(false);
@@ -61,13 +63,12 @@ export default function ContactSection() {
 
   return (
     <section id="contact" className="section">
-      <div className="section-heading">
-        <span className="section-eyebrow">Get in Touch</span>
-        <h2>
-          Contact <span>Us</span>
-        </h2>
-      </div>
-      <p>Reach out to PLBF for partnerships, membership, or general enquiries. We welcome your questions and collaborations.</p>
+      <SectionHeading
+        eyebrow={heading.eyebrow}
+        title={heading.title}
+        titleHighlight={heading.title_highlight}
+        intro={heading.intro}
+      />
       <form className="form-card" onSubmit={handleSubmit}>
         <label htmlFor="contact-name">Name</label>
         <input id="contact-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Enter your name" required />

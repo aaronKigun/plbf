@@ -42,6 +42,30 @@ export type Programme = {
   description: string;
 };
 
+export type GalleryItem = {
+  id?: number;
+  title?: string;
+  image: string;
+  caption?: string;
+  display_order?: number;
+};
+
+export type VideoItem = {
+  id?: number;
+  title: string;
+  url: string;
+  description?: string;
+  display_order?: number;
+};
+
+export type SectionHeading = {
+  key: string;
+  eyebrow?: string;
+  title: string;
+  title_highlight?: string;
+  intro?: string;
+};
+
 export type Member = {
   id?: number;
   full_name: string;
