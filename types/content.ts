@@ -41,3 +41,27 @@ export type Programme = {
   icon?: string;
   description: string;
 };
+
+export type Member = {
+  id?: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  call_to_bar_year?: string;
+  practice_area?: string;
+  dues_amount?: number;
+  payment_reference?: string;
+  payment_status?: 'pending' | 'paid' | 'failed';
+  status?: string;
+  paid_at?: string;
+  created_at?: string;
+};
+
+export type ContactMessage = {
+  id?: number;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  created_at?: string;
+};

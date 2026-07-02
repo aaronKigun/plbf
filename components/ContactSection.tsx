@@ -1,18 +1,84 @@
+'use client';
+
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+
+const emailJsPublicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '';
+const emailJsServiceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
+const emailJsTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '';
+
+function loadScript(src: string, id: string) {
+  return new Promise<void>((resolve, reject) => {
+    if (document.getElementById(id)) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = id;
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Unable to load ${src}`));
+    document.body.appendChild(script);
+  });
+}
+
 export default function ContactSection() {
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatus('');
+
+    if (!emailJsPublicKey || !emailJsServiceId || !emailJsTemplateId) {
+      setStatus('EmailJS is not configured yet.');
+      return;
+    }
+
+    setSending(true);
+    try {
+      await loadScript('https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js', 'emailjs-sdk');
+      window.emailjs?.init(emailJsPublicKey);
+      await window.emailjs?.send(emailJsServiceId, emailJsTemplateId, {
+        from_name: form.name,
+        from_email: form.email,
+        subject: form.subject,
+        message: form.message
+      });
+
+      await supabase.from('contact_messages').insert([{ ...form }]);
+      setForm({ name: '', email: '', subject: '', message: '' });
+      setStatus('Message sent successfully.');
+    } catch {
+      setStatus('Unable to send message right now.');
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <section id="contact" className="section">
-      <h2>Contact Us</h2>
+      <div className="section-heading">
+        <span className="section-eyebrow">Get in Touch</span>
+        <h2>
+          Contact <span>Us</span>
+        </h2>
+      </div>
       <p>Reach out to PLBF for partnerships, membership, or general enquiries. We welcome your questions and collaborations.</p>
-      <form className="form-card">
+      <form className="form-card" onSubmit={handleSubmit}>
         <label htmlFor="contact-name">Name</label>
-        <input id="contact-name" placeholder="Enter your name" />
+        <input id="contact-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Enter your name" required />
         <label htmlFor="contact-email">Email Address</label>
-        <input id="contact-email" type="email" placeholder="Enter your email" />
+        <input id="contact-email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} type="email" placeholder="Enter your email" required />
         <label htmlFor="contact-subject">Subject</label>
-        <input id="contact-subject" placeholder="What would you like to discuss?" />
+        <input id="contact-subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="What would you like to discuss?" required />
         <label htmlFor="contact-message">Message</label>
-        <textarea id="contact-message" placeholder="Write your message here" rows={5} />
-        <button type="button">Send Message</button>
+        <textarea id="contact-message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Write your message here" rows={5} required />
+        <button type="submit" disabled={sending}>{sending ? 'Sending...' : 'Send Message'}</button>
+        {status ? <p className="form-status">{status}</p> : null}
       </form>
     </section>
   );

@@ -4,7 +4,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://kuxwbxnenjd
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_rTJ6oJAHmK0fuwE1tXLX2g__3EeUzN5';
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: { persistSession: false, autoRefreshToken: false }
+  auth: { persistSession: true, autoRefreshToken: true }
 });
 
 export async function uploadImage(file: File, folder: string) {

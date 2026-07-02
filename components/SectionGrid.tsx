@@ -1,6 +1,6 @@
 type SectionGridProps = {
   title: string;
-  items: Array<{ title: string; description: string; subtitle?: string }>;
+  items: Array<{ title: string; description: string; subtitle?: string; image?: string }>;
   alt?: boolean;
   eyebrow?: string;
   intro?: string;
@@ -20,6 +20,11 @@ export default function SectionGrid({ title, items, alt = false, eyebrow, intro,
       <div className="card-grid">
         {items.map((item) => (
           <article key={item.title} className="card">
+            {item.image ? (
+              <div className="card-image">
+                <img src={item.image} alt={item.title} />
+              </div>
+            ) : null}
             <h3>{item.title}</h3>
             {item.subtitle ? <p className="muted">{item.subtitle}</p> : null}
             <p>{item.description}</p>

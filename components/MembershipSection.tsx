@@ -1,16 +1,135 @@
+'use client';
+
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+
+const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
+
+function loadScript(src: string, id: string) {
+  return new Promise<void>((resolve, reject) => {
+    if (document.getElementById(id)) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = id;
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Unable to load ${src}`));
+    document.body.appendChild(script);
+  });
+}
+
 export default function MembershipSection() {
+  const [form, setForm] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    call_to_bar_year: '',
+    practice_area: '',
+    dues_amount: '10000'
+  });
+  const [status, setStatus] = useState('');
+  const [paying, setPaying] = useState(false);
+
+  const saveMember = async (paymentReference: string) => {
+    const duesAmount = Number(form.dues_amount);
+    const { error } = await supabase.from('members').insert([{
+      full_name: form.full_name,
+      email: form.email,
+      phone: form.phone,
+      call_to_bar_year: form.call_to_bar_year,
+      practice_area: form.practice_area,
+      dues_amount: duesAmount,
+      payment_reference: paymentReference,
+      payment_status: 'paid',
+      status: 'paid',
+      paid_at: new Date().toISOString()
+    }]);
+
+    if (error) throw error;
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatus('');
+
+    if (!paystackPublicKey) {
+      setStatus('Paystack is not configured yet.');
+      return;
+    }
+
+    const duesAmount = Number(form.dues_amount);
+    if (!duesAmount || duesAmount < 1) {
+      setStatus('Enter a valid dues amount.');
+      return;
+    }
+
+    setPaying(true);
+    try {
+      await loadScript('https://js.paystack.co/v1/inline.js', 'paystack-inline');
+      const handler = window.PaystackPop?.setup({
+        key: paystackPublicKey,
+        email: form.email,
+        amount: duesAmount * 100,
+        currency: 'NGN',
+        ref: `PLBF-${Date.now()}`,
+        metadata: {
+          custom_fields: [
+            { display_name: 'Full Name', variable_name: 'full_name', value: form.full_name },
+            { display_name: 'Phone', variable_name: 'phone', value: form.phone }
+          ]
+        },
+        callback: async (response) => {
+          try {
+            await saveMember(response.reference);
+            setForm({ full_name: '', email: '', phone: '', call_to_bar_year: '', practice_area: '', dues_amount: '10000' });
+            setStatus('Payment successful. Your membership has been registered as paid.');
+          } catch {
+            setStatus('Payment succeeded, but saving your membership failed. Please contact the secretariat with your reference.');
+          } finally {
+            setPaying(false);
+          }
+        },
+        onClose: () => {
+          setStatus('Payment was not completed.');
+          setPaying(false);
+        }
+      });
+
+      handler?.openIframe();
+    } catch {
+      setStatus('Unable to start payment right now.');
+      setPaying(false);
+    }
+  };
+
   return (
     <section id="membership" className="section section-alt">
-      <h2>Membership</h2>
-      <p>Join the Plateau Lawyers Bar Forum and become part of a stronger legal community committed to justice and professional excellence.</p>
-      <form className="form-card">
+      <div className="section-heading">
+        <span className="section-eyebrow">Join Us</span>
+        <h2>
+          Membership <span>& Dues</span>
+        </h2>
+      </div>
+      <p>Join the Plateau Lawyers Bar Forum and pay your dues securely. Successful payments are saved in the membership database as paid.</p>
+      <form className="form-card" onSubmit={handleSubmit}>
         <label htmlFor="member-name">Full Name</label>
-        <input id="member-name" placeholder="Enter your full name" />
+        <input id="member-name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Enter your full name" required />
         <label htmlFor="member-email">Email Address</label>
-        <input id="member-email" type="email" placeholder="Enter your email" />
+        <input id="member-email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} type="email" placeholder="Enter your email" required />
         <label htmlFor="member-phone">Phone Number</label>
-        <input id="member-phone" placeholder="Enter your phone number" />
-        <button type="button">Submit Membership Request</button>
+        <input id="member-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Enter your phone number" required />
+        <label htmlFor="member-call-year">Call to Bar Year</label>
+        <input id="member-call-year" value={form.call_to_bar_year} onChange={(e) => setForm({ ...form, call_to_bar_year: e.target.value })} placeholder="e.g. 2018" />
+        <label htmlFor="member-practice">Practice Area</label>
+        <input id="member-practice" value={form.practice_area} onChange={(e) => setForm({ ...form, practice_area: e.target.value })} placeholder="e.g. Litigation" />
+        <label htmlFor="member-dues">Dues Amount (NGN)</label>
+        <input id="member-dues" value={form.dues_amount} onChange={(e) => setForm({ ...form, dues_amount: e.target.value })} inputMode="numeric" placeholder="10000" required />
+        <button type="submit" disabled={paying}>{paying ? 'Processing...' : 'Pay Dues & Register'}</button>
+        {status ? <p className="form-status">{status}</p> : null}
       </form>
     </section>
   );

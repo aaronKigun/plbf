@@ -39,9 +39,9 @@ export default function HomePage() {
   }, []);
 
   const fallbackTrustees = [
-    { name: 'Chief A. B. D. Jang', position: 'Chairman', bio: 'Guiding the forum with strategic leadership and legal insight.' },
-    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', bio: 'Supporting members and strengthening institutional growth.' },
-    { name: 'Barr. I. S. Dalyop', position: 'Secretary', bio: 'Coordinating policy, engagement, and administration.' }
+    { name: 'Chief A. B. D. Jang', position: 'Chairman', image: '/images/Logo.jpg', bio: 'Guiding the forum with strategic leadership and legal insight.' },
+    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', image: '/images/Logo.jpg', bio: 'Supporting members and strengthening institutional growth.' },
+    { name: 'Barr. I. S. Dalyop', position: 'Secretary', image: '/images/Logo.jpg', bio: 'Coordinating policy, engagement, and administration.' }
   ];
 
   const fallbackLeaders = [
@@ -57,19 +57,19 @@ export default function HomePage() {
   ];
 
   const fallbackEvents = [
-    { title: 'Annual General Meeting', date: '12 Aug 2026 • Jos', description: 'Conference' },
-    { title: 'Free Legal Clinic', date: '20 Sep 2026 • Bassa', description: 'Outreach' },
-    { title: 'Leadership Roundtable', date: '03 Oct 2026 • Abuja', description: 'Forum' }
+    { title: 'Annual General Meeting', date: '12 Aug 2026 - Jos', image: '/images/gavel.jpg', description: 'Conference' },
+    { title: 'Free Legal Clinic', date: '20 Sep 2026 - Bassa', image: '/images/gavel.jpg', description: 'Outreach' },
+    { title: 'Leadership Roundtable', date: '03 Oct 2026 - Abuja', image: '/images/gavel.jpg', description: 'Forum' }
   ];
 
   const fallbackNews = [
-    { title: 'PLBF Launches New Membership Drive', category: 'Membership', excerpt: 'The forum is welcoming new members to strengthen legal advocacy.' },
-    { title: 'Youth Legal Awareness Programme Announced', category: 'Outreach', excerpt: 'A new programme focused on civic education and legal access.' },
-    { title: 'Panel Discussion on Access to Justice', category: 'Event', excerpt: 'A forthcoming conversation on building fairer legal systems.' }
+    { title: 'PLBF Launches New Membership Drive', category: 'Membership', image: '/images/gavel.jpg', excerpt: 'The forum is welcoming new members to strengthen legal advocacy.' },
+    { title: 'Youth Legal Awareness Programme Announced', category: 'Outreach', image: '/images/gavel.jpg', excerpt: 'A new programme focused on civic education and legal access.' },
+    { title: 'Panel Discussion on Access to Justice', category: 'Event', image: '/images/gavel.jpg', excerpt: 'A forthcoming conversation on building fairer legal systems.' }
   ];
 
   const governanceItems = [
-    { title: 'Constitution', description: 'The forum’s constitution provides governance principles, membership rules, and operational structure.' },
+    { title: 'Constitution', description: "The forum's constitution provides governance principles, membership rules, and operational structure." },
     { title: 'Code of Conduct', description: 'Professional standards, ethical duties, and disciplinary procedures for members.' },
     { title: 'Membership Criteria', description: 'Eligibility requirements, admission process, and membership benefits for legal practitioners.' },
     { title: 'Continuing Legal Education', description: 'Professional development, training programmes, and mentorship for bar members.' },
@@ -101,11 +101,6 @@ export default function HomePage() {
           <p>
             PLBF is a non-partisan association of legal practitioners working to promote professional excellence, legal education, and public welfare.
           </p>
-          <div className="quote-banner">
-            <p>
-              “We stand for justice, discipline, and service to the people of Plateau State and beyond.”
-            </p>
-          </div>
         </section>
 
         <section id="governance">
@@ -121,7 +116,12 @@ export default function HomePage() {
             title="Board of Trustees"
             eyebrow="Pillar of Guidance"
             intro="Distinguished senior members who provide strategic direction, wisdom, and steadfast support to the Forum."
-            items={displayTrustees.map((item) => ({ title: item.name, subtitle: item.position, description: item.bio || 'Community leadership and legal service.' }))}
+            items={displayTrustees.map((item) => ({
+              title: item.name,
+              subtitle: item.position,
+              image: item.image || '/images/Logo.jpg',
+              description: item.bio || 'Community leadership and legal service.'
+            }))}
             tone="dark"
           />
         </section>
@@ -133,12 +133,27 @@ export default function HomePage() {
             items={displayProgrammes.map((item) => ({ title: item.title, description: item.description }))}
           />
         </section>
+        <section className="quote-section" aria-label="Guiding principle">
+          <div className="quote-inner">
+            <span className="quote-mark" aria-hidden="true">"</span>
+            <blockquote>
+              Where there is no rule of law, there is no freedom. Where there is no justice, there can be no peace.
+            </blockquote>
+            <div className="quote-rule" />
+            <p>Our Guiding Principle</p>
+          </div>
+        </section>
         <section id="events">
           <SectionGrid
             title="Events"
             eyebrow="Upcoming & Recent"
             intro="Forums, clinics, meetings, and professional gatherings that keep the PLBF community connected."
-            items={displayEvents.map((item) => ({ title: item.title, subtitle: item.date, description: item.description || 'Upcoming event' }))}
+            items={displayEvents.map((item) => ({
+              title: item.title,
+              subtitle: item.date,
+              image: item.image || '/images/gavel.jpg',
+              description: item.description || 'Upcoming event'
+            }))}
             tone="white"
           />
         </section>
@@ -153,6 +168,7 @@ export default function HomePage() {
               return {
                 title: entry.title,
                 subtitle: entry.category || 'Update',
+                image: entry.image || '/images/gavel.jpg',
                 description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
               };
             })}
