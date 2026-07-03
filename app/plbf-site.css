@@ -862,8 +862,8 @@
 
 .plbf-site .leader-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
 }
 
 .plbf-site .leader-card {
@@ -873,7 +873,7 @@
 
 .plbf-site .team-img-wrap {
   position: relative;
-  height: 14rem;
+  height: 280px;
   overflow: hidden;
 }
 
@@ -881,7 +881,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(6, 13, 26, 0.8) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(6, 13, 26, 0.6) 0%, transparent 50%);
 }
 
 .plbf-site .team-img-wrap img {
@@ -897,23 +897,24 @@
 
 .plbf-site .team-role {
   position: absolute;
-  bottom: 1rem;
-  left: 1.25rem;
+  bottom: 1.5rem;
+  left: 1.5rem;
   z-index: 1;
 }
 
 .plbf-site .leader-info {
-  padding: 1rem 1.25rem 1.25rem;
+  padding: 1.5rem 1.5rem 1.5rem;
 }
 
 .plbf-site .leader-info h3 {
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   margin: 0 0 0.25rem;
+  font-weight: 600;
 }
 
 .plbf-site .leader-info p {
   color: var(--fg-muted);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   margin: 0;
 }
 

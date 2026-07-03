@@ -12,13 +12,26 @@ export async function uploadImage(file: File, folder: string) {
 
   const ext = file.name.split('.').pop();
   const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const { error } = await supabase.storage.from('images').upload(fileName, file, {
+  
+  // Upload file to Supabase Storage
+  const { error: uploadError } = await supabase.storage.from('images').upload(fileName, file, {
     cacheControl: '3600',
     upsert: false,
     contentType: file.type || undefined
   });
-  if (error) throw error;
+  
+  if (uploadError) {
+    console.error('Image upload error:', uploadError);
+    throw new Error(`Upload failed: ${uploadError.message}. Make sure the "images" bucket exists and is set to PUBLIC in Supabase Storage.`);
+  }
+  
+  // Get public URL
   const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName);
+  
+  if (!urlData?.publicUrl) {
+    throw new Error('Failed to generate public URL. Ensure the "images" bucket is PUBLIC.');
+  }
+  
   return urlData.publicUrl;
 }
 
