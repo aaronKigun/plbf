@@ -1,37 +1,108 @@
 import SectionHeading from '@/components/SectionHeading';
+import Reveal from '@/components/Reveal';
 
 type SectionGridProps = {
+  id?: string;
   title: string;
+  titleHighlight?: string;
   items: Array<{ title: string; description: string; subtitle?: string; image?: string }>;
-  alt?: boolean;
   eyebrow?: string;
   intro?: string;
-  tone?: 'default' | 'white' | 'dark';
-  variant?: 'default' | 'profile' | 'media';
+  variant?: 'default' | 'profile' | 'media' | 'governance';
+  sectionNum?: string;
 };
 
-export default function SectionGrid({ title, items, alt = false, eyebrow, intro, tone = 'default', variant = 'default' }: SectionGridProps) {
-  const toneClass = tone === 'dark' ? ' section-dark' : tone === 'white' || alt ? ' section-alt' : '';
-  const cardClass = variant === 'profile' ? ' card-profile' : variant === 'media' ? ' card-media' : '';
+const governanceIcons: Record<string, string> = {
+  Constitution: '§',
+  'Code of Conduct': '✓',
+  'Membership Criteria': '◎',
+  'Continuing Legal Education': '◆',
+  'Committees & Working Groups': '▦',
+  'Annual Report': '▤'
+};
+
+export default function SectionGrid({
+  id,
+  title,
+  titleHighlight,
+  items,
+  eyebrow,
+  intro,
+  variant = 'default',
+  sectionNum
+}: SectionGridProps) {
+  const gridClass =
+    variant === 'profile'
+      ? 'card-grid profile-grid'
+      : variant === 'media'
+        ? 'card-grid media-grid'
+        : variant === 'governance'
+          ? 'card-grid governance-grid'
+          : 'card-grid';
 
   return (
-    <section className={`section${toneClass}`}>
-      <SectionHeading eyebrow={eyebrow} title={title} intro={intro} />
-      <div className="card-grid">
-        {items.map((item) => (
-          <article key={item.title} className={`card${cardClass}`}>
-            {item.image ? (
-              <div className="card-image">
-                <img src={item.image} alt={item.title} />
-              </div>
-            ) : null}
-            <div className="card-body">
-              {item.subtitle ? <p className="card-eyebrow">{item.subtitle}</p> : null}
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </div>
-          </article>
-        ))}
+    <section id={id} className="site-section">
+      <div className="site-container">
+        <Reveal>
+          <SectionHeading
+            eyebrow={eyebrow}
+            title={title}
+            titleHighlight={titleHighlight}
+            intro={intro}
+            sectionNum={sectionNum}
+          />
+        </Reveal>
+
+        <div className={gridClass}>
+          {items.map((item) => (
+            <Reveal key={item.title} as="article" className={`glass-card card-${variant}`}>
+              {variant === 'governance' ? (
+                <>
+                  <div className="gov-icon-area" aria-hidden="true">
+                    {governanceIcons[item.title] || '•'}
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </>
+              ) : variant === 'profile' ? (
+                <>
+                  <div className="profile-avatar">
+                    <img src={item.image || '/images/Logo.jpg'} alt={item.title} />
+                  </div>
+                  {item.subtitle ? <span className="pill pill-sm">{item.subtitle}</span> : null}
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </>
+              ) : variant === 'media' ? (
+                <>
+                  {item.image ? (
+                    <div className="media-image">
+                      <img src={item.image} alt={item.title} loading="lazy" />
+                      {item.subtitle ? <span className="media-badge">{item.subtitle}</span> : null}
+                    </div>
+                  ) : null}
+                  <div className="media-body">
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {item.image ? (
+                    <div className="media-image">
+                      <img src={item.image} alt={item.title} loading="lazy" />
+                    </div>
+                  ) : null}
+                  <div className="media-body">
+                    {item.subtitle ? <p className="card-eyebrow">{item.subtitle}</p> : null}
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                </>
+              )}
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

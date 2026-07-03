@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import SectionHeading from '@/components/SectionHeading';
 import type { SectionHeading as SectionHeadingType } from '@/types/content';
+import Reveal from '@/components/Reveal';
 
 const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
 
@@ -109,29 +110,86 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
   };
 
   return (
-    <section id="membership" className="section section-alt">
-      <SectionHeading
-        eyebrow={heading.eyebrow}
-        title={heading.title}
-        titleHighlight={heading.title_highlight}
-        intro={heading.intro}
-      />
-      <form className="form-card" onSubmit={handleSubmit}>
-        <label htmlFor="member-name">Full Name</label>
-        <input id="member-name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Enter your full name" required />
-        <label htmlFor="member-email">Email Address</label>
-        <input id="member-email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} type="email" placeholder="Enter your email" required />
-        <label htmlFor="member-phone">Phone Number</label>
-        <input id="member-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Enter your phone number" required />
-        <label htmlFor="member-call-year">Call to Bar Year</label>
-        <input id="member-call-year" value={form.call_to_bar_year} onChange={(e) => setForm({ ...form, call_to_bar_year: e.target.value })} placeholder="e.g. 2018" />
-        <label htmlFor="member-practice">Practice Area</label>
-        <input id="member-practice" value={form.practice_area} onChange={(e) => setForm({ ...form, practice_area: e.target.value })} placeholder="e.g. Litigation" />
-        <label htmlFor="member-dues">Dues Amount (NGN)</label>
-        <input id="member-dues" value={form.dues_amount} onChange={(e) => setForm({ ...form, dues_amount: e.target.value })} inputMode="numeric" placeholder="10000" required />
-        <button type="submit" disabled={paying}>{paying ? 'Processing...' : 'Pay Dues & Register'}</button>
-        {status ? <p className="form-status">{status}</p> : null}
-      </form>
+    <section id="membership" className="site-section membership-section">
+      <div className="site-container">
+        <Reveal>
+          <SectionHeading
+            eyebrow={heading.eyebrow}
+            title={heading.title}
+            titleHighlight={heading.title_highlight}
+            intro={heading.intro}
+          />
+        </Reveal>
+
+        <Reveal className="glass-card form-card membership-form">
+          <form onSubmit={handleSubmit}>
+            <div className="form-row">
+              <div>
+                <label htmlFor="member-name">Full Name</label>
+                <input
+                  id="member-name"
+                  value={form.full_name}
+                  onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="member-email">Email Address</label>
+                <input
+                  id="member-email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+            <label htmlFor="member-phone">Phone Number</label>
+            <input
+              id="member-phone"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              placeholder="Enter your phone number"
+              required
+            />
+            <div className="form-row">
+              <div>
+                <label htmlFor="member-call-year">Call to Bar Year</label>
+                <input
+                  id="member-call-year"
+                  value={form.call_to_bar_year}
+                  onChange={(e) => setForm({ ...form, call_to_bar_year: e.target.value })}
+                  placeholder="e.g. 2018"
+                />
+              </div>
+              <div>
+                <label htmlFor="member-practice">Practice Area</label>
+                <input
+                  id="member-practice"
+                  value={form.practice_area}
+                  onChange={(e) => setForm({ ...form, practice_area: e.target.value })}
+                  placeholder="e.g. Litigation"
+                />
+              </div>
+            </div>
+            <label htmlFor="member-dues">Dues Amount (NGN)</label>
+            <input
+              id="member-dues"
+              value={form.dues_amount}
+              onChange={(e) => setForm({ ...form, dues_amount: e.target.value })}
+              inputMode="numeric"
+              placeholder="10000"
+              required
+            />
+            <button type="submit" className="mag-btn mag-btn-full" disabled={paying}>
+              <span>{paying ? 'Processing...' : 'Pay Dues & Register'}</span>
+            </button>
+            {status ? <p className={`form-status${status.includes('Unable') || status.includes('not configured') || status.includes('not completed') || status.includes('valid') || status.includes('failed') ? ' error' : ''}`}>{status}</p> : null}
+          </form>
+        </Reveal>
+      </div>
     </section>
   );
 }

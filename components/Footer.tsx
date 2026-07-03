@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-inner">
+    <footer className="site-footer">
+      <div className="site-container">
         <div className="footer-grid">
           <div className="footer-about">
             <div className="footer-logo-row">
@@ -48,6 +48,7 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="gold-line footer-divider" aria-hidden="true" />
         <div className="footer-bottom">
           <p>&copy; 2026 Plateau Lawyers Bar Forum. All rights reserved.</p>
           <div>

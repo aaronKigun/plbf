@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import HeroSection from '@/components/HeroSection';
 import Navbar from '@/components/Navbar';
+import MarqueeSection from '@/components/MarqueeSection';
 import SectionGrid from '@/components/SectionGrid';
 import SectionHeading from '@/components/SectionHeading';
 import LeadershipSection from '@/components/LeadershipSection';
@@ -11,6 +12,7 @@ import VideosSection from '@/components/VideosSection';
 import MembershipSection from '@/components/MembershipSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
+import Reveal from '@/components/Reveal';
 import { supabase } from '@/lib/supabase';
 import { resolveHeading } from '@/lib/sectionHeadings';
 import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, SectionHeading as SectionHeadingType } from '@/types/content';
@@ -103,7 +105,8 @@ export default function HomePage() {
   const displayNews = news.length ? news : fallbackNews;
 
   return (
-    <>
+    <div className="plbf-site">
+      <div className="noise-overlay" aria-hidden="true" />
       <Navbar />
       <main>
         <HeroSection
@@ -112,101 +115,117 @@ export default function HomePage() {
           description="PLBF is a non-partisan association of legal practitioners working to promote professional excellence, legal education, and public welfare."
         />
 
-        <section id="about" className="section">
-          <SectionHeading
-            eyebrow={heading('about').eyebrow}
-            title={heading('about').title}
-            intro={heading('about').intro}
-          />
-        </section>
+        <MarqueeSection />
 
-        <section id="governance">
-          <SectionGrid
-            title={heading('governance').title}
-            eyebrow={heading('governance').eyebrow}
-            intro={heading('governance').intro}
-            items={governanceItems}
-          />
-        </section>
-
-        <LeadershipSection leaders={displayLeaders} heading={heading('leadership')} />
-
-        <section id="services">
-          <SectionGrid
-            title={heading('programmes').title}
-            eyebrow={heading('programmes').eyebrow}
-            intro={heading('programmes').intro}
-            items={fallbackProgrammes}
-          />
-        </section>
-
-        <section className="quote-section" aria-label="Guiding principle">
-          <div className="quote-inner">
-            <span className="quote-mark" aria-hidden="true">"</span>
-            <blockquote>
-              Where there is no rule of law, there is no freedom. Where there is no justice, there can be no peace.
-            </blockquote>
-            <div className="quote-rule" />
-            <p>Our Guiding Principle</p>
+        <section id="about" className="site-section about-section">
+          <div className="orb orb-navy about-orb" aria-hidden="true" />
+          <div className="site-container about-layout">
+            <Reveal className="about-copy">
+              <SectionHeading
+                eyebrow={heading('about').eyebrow}
+                title={heading('about').title}
+                intro={heading('about').intro}
+                centered={false}
+                sectionNum="01"
+              />
+              <div className="gold-line about-rule" aria-hidden="true" />
+            </Reveal>
           </div>
         </section>
 
-        <section id="events">
-          <SectionGrid
-            title={heading('events').title}
-            eyebrow={heading('events').eyebrow}
-            intro={heading('events').intro}
-            items={displayEvents.map((item) => ({
-              title: item.title,
-              subtitle: item.date,
-              image: item.image || '/images/gavel.jpg',
-              description: item.description || 'Upcoming event'
-            }))}
-            tone="white"
-            variant="media"
-          />
+        <SectionGrid
+          id="governance"
+          title={heading('governance').title}
+          eyebrow={heading('governance').eyebrow}
+          intro={heading('governance').intro}
+          items={governanceItems}
+          variant="governance"
+          sectionNum="02"
+        />
+
+        <LeadershipSection leaders={displayLeaders} heading={heading('leadership')} />
+
+        <SectionGrid
+          id="services"
+          title={heading('programmes').title}
+          eyebrow={heading('programmes').eyebrow}
+          intro={heading('programmes').intro}
+          items={fallbackProgrammes}
+          variant="governance"
+          sectionNum="03"
+        />
+
+        <section className="quote-section" aria-label="Guiding principle">
+          <div className="quote-bg" aria-hidden="true" />
+          <div className="gold-line" aria-hidden="true" />
+          <div className="site-container quote-inner">
+            <Reveal>
+              <span className="quote-mark" aria-hidden="true">&ldquo;</span>
+              <blockquote>
+                Where there is no rule of law, there is no freedom. Where there is no justice, there can be no peace.
+              </blockquote>
+              <div className="gold-line quote-rule" aria-hidden="true" />
+              <cite>Our Guiding Principle</cite>
+            </Reveal>
+          </div>
+          <div className="gold-line" aria-hidden="true" />
         </section>
 
-        <section id="trustees">
-          <SectionGrid
-            title={heading('trustees').title}
-            eyebrow={heading('trustees').eyebrow}
-            intro={heading('trustees').intro}
-            items={displayTrustees.map((item) => ({
-              title: item.name,
-              subtitle: item.position,
-              image: item.image || '/images/Logo.jpg',
-              description: item.bio || 'Community leadership and legal service.'
-            }))}
-            variant="profile"
-          />
-        </section>
+        <SectionGrid
+          id="events"
+          title={heading('events').title}
+          eyebrow={heading('events').eyebrow}
+          intro={heading('events').intro}
+          items={displayEvents.map((item) => ({
+            title: item.title,
+            subtitle: item.date,
+            image: item.image || '/images/gavel.jpg',
+            description: item.description || 'Upcoming event'
+          }))}
+          variant="media"
+          sectionNum="05"
+        />
 
-        <section id="news-updates">
-          <SectionGrid
-            title={heading('news').title}
-            eyebrow={heading('news').eyebrow}
-            intro={heading('news').intro}
-            items={displayNews.map((item) => {
-              const entry = item as NewsItem & { category?: string; excerpt?: string; content?: string };
-              return {
-                title: entry.title,
-                subtitle: entry.category || 'Update',
-                image: entry.image || '/images/gavel.jpg',
-                description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
-              };
-            })}
-            variant="media"
-          />
-        </section>
+        <SectionGrid
+          id="trustees"
+          title={heading('trustees').title}
+          titleHighlight={heading('trustees').title_highlight}
+          eyebrow={heading('trustees').eyebrow}
+          intro={heading('trustees').intro}
+          items={displayTrustees.map((item) => ({
+            title: item.name,
+            subtitle: item.position,
+            image: item.image || '/images/Logo.jpg',
+            description: item.bio || 'Community leadership and legal service.'
+          }))}
+          variant="profile"
+        />
+
+        <SectionGrid
+          id="news-updates"
+          title={heading('news').title}
+          titleHighlight={heading('news').title_highlight}
+          eyebrow={heading('news').eyebrow}
+          intro={heading('news').intro}
+          items={displayNews.map((item) => {
+            const entry = item as NewsItem & { category?: string; excerpt?: string; content?: string };
+            return {
+              title: entry.title,
+              subtitle: entry.category || 'Update',
+              image: entry.image || '/images/gavel.jpg',
+              description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
+            };
+          })}
+          variant="media"
+          sectionNum="06"
+        />
 
         <GallerySection items={gallery} heading={heading('gallery')} />
         <VideosSection items={videos} heading={heading('videos')} />
-
         <MembershipSection heading={heading('membership')} />
         <ContactSection heading={heading('contact')} />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

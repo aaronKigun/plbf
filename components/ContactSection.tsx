@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import SectionHeading from '@/components/SectionHeading';
 import type { SectionHeading as SectionHeadingType } from '@/types/content';
+import Reveal from '@/components/Reveal';
 
 const emailJsPublicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '';
 const emailJsServiceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
@@ -62,25 +63,63 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
   };
 
   return (
-    <section id="contact" className="section">
-      <SectionHeading
-        eyebrow={heading.eyebrow}
-        title={heading.title}
-        titleHighlight={heading.title_highlight}
-        intro={heading.intro}
-      />
-      <form className="form-card" onSubmit={handleSubmit}>
-        <label htmlFor="contact-name">Name</label>
-        <input id="contact-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Enter your name" required />
-        <label htmlFor="contact-email">Email Address</label>
-        <input id="contact-email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} type="email" placeholder="Enter your email" required />
-        <label htmlFor="contact-subject">Subject</label>
-        <input id="contact-subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="What would you like to discuss?" required />
-        <label htmlFor="contact-message">Message</label>
-        <textarea id="contact-message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Write your message here" rows={5} required />
-        <button type="submit" disabled={sending}>{sending ? 'Sending...' : 'Send Message'}</button>
-        {status ? <p className="form-status">{status}</p> : null}
-      </form>
+    <section id="contact" className="site-section contact-section">
+      <div className="orb orb-navy contact-orb" aria-hidden="true" />
+      <div className="site-container contact-layout">
+        <Reveal className="contact-copy">
+          <SectionHeading
+            eyebrow={heading.eyebrow}
+            title={heading.title}
+            titleHighlight={heading.title_highlight}
+            intro={heading.intro}
+            centered={false}
+            sectionNum="09"
+          />
+        </Reveal>
+
+        <Reveal className="glass-card form-card">
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="contact-name">Name</label>
+            <input
+              id="contact-name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="Enter your name"
+              required
+            />
+            <label htmlFor="contact-email">Email Address</label>
+            <input
+              id="contact-email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              type="email"
+              placeholder="Enter your email"
+              required
+            />
+            <label htmlFor="contact-subject">Subject</label>
+            <input
+              id="contact-subject"
+              value={form.subject}
+              onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              placeholder="What would you like to discuss?"
+              required
+            />
+            <label htmlFor="contact-message">Message</label>
+            <textarea
+              id="contact-message"
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              placeholder="Write your message here"
+              rows={5}
+              required
+            />
+            <button type="submit" className="mag-btn mag-btn-full" disabled={sending}>
+              <span>{sending ? 'Sending...' : 'Send Message'}</span>
+            </button>
+            {status ? <p className={`form-status${status.includes('Unable') || status.includes('not configured') ? ' error' : ''}`}>{status}</p> : null}
+          </form>
+        </Reveal>
+      </div>
     </section>
   );
 }
