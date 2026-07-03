@@ -132,10 +132,12 @@ export default function AdminPage() {
 
   const handleLeaderSave = async () => {
     showNotice('');
+    console.log('Saving leader with data:', leaderForm);
     const { error } = editingLeaderId
       ? await supabase.from('leaders').update({ ...leaderForm }).eq('id', editingLeaderId)
       : await supabase.from('leaders').insert([{ ...leaderForm, display_order: leaders.length + 1 }]);
     if (error) {
+      console.error('Save error:', error);
       showNotice(error.message, true);
     } else {
       showNotice(editingLeaderId ? 'Leader updated successfully.' : 'Leader added successfully.');
@@ -258,8 +260,13 @@ export default function AdminPage() {
         showNotice('Image upload failed. Please try again.', true);
         return;
       }
-      setter((prev: any) => ({ ...prev, image: url }));
-      showNotice('Image uploaded. Click the Add/Update button to save your changes.');
+      console.log('Image uploaded successfully:', url);
+      setter((prev: any) => {
+        const updated = { ...prev, image: url };
+        console.log('Form state after image upload:', updated);
+        return updated;
+      });
+      showNotice(`✓ Image uploaded: ${url.substring(url.lastIndexOf('/') + 1)}. Now click Add/Update to save.`);
     } catch (error: any) {
       showNotice(`Image upload failed: ${error?.message || 'ensure the "images" storage bucket exists and is public.'}`, true);
       event.target.value = '';
