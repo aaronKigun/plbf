@@ -579,7 +579,7 @@ export default function AdminPage() {
 
             <section id="admin-members" className="admin-panel wide">
               <PanelTitle title="Members & Dues" />
-              <AdminTable headings={['Name', 'Email', 'Phone', 'Practice Area', 'Amount', 'Status', 'Reference']} emptyText="No paid members yet." rows={members.map((member) => [member.full_name, member.email, member.phone, member.practice_area || 'Not set', `NGN ${member.dues_amount || 0}`, member.payment_status || member.status || 'pending', member.payment_reference || 'Not set'])} badgeColumn={5} />
+              <AdminTable headings={['Name', 'Email', 'Phone', 'Enrollment No.', 'Practice Area', 'Amount', 'Status', 'Reference']} emptyText="No paid members yet." rows={members.map((member) => [member.full_name, member.email, member.phone, member.enrollment_number || 'Not set', member.practice_area || 'Not set', `NGN ${member.dues_amount || 0}`, member.payment_status || member.status || 'pending', member.payment_reference || 'Not set'])} badgeColumn={6} />
             </section>
 
             <section id="admin-messages" className="admin-panel wide">

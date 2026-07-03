@@ -73,6 +73,7 @@ export type Member = {
   phone: string;
   call_to_bar_year?: string;
   practice_area?: string;
+  enrollment_number?: string;
   dues_amount?: number;
   payment_reference?: string;
   payment_status?: 'pending' | 'paid' | 'failed';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { supabase } from '@/lib/supabase';
 import SectionHeading from '@/components/SectionHeading';
 import type { SectionHeading as SectionHeadingType } from '@/types/content';
@@ -30,6 +30,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
     full_name: '',
     email: '',
     phone: '',
+    enrollment_number: '',
     call_to_bar_year: '',
     practice_area: '',
     dues_amount: '10000'
@@ -43,6 +44,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
       full_name: form.full_name,
       email: form.email,
       phone: form.phone,
+      enrollment_number: form.enrollment_number,
       call_to_bar_year: form.call_to_bar_year,
       practice_area: form.practice_area,
       dues_amount: duesAmount,
@@ -55,7 +57,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
     if (error) throw error;
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus('');
 
@@ -82,13 +84,14 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
         metadata: {
           custom_fields: [
             { display_name: 'Full Name', variable_name: 'full_name', value: form.full_name },
-            { display_name: 'Phone', variable_name: 'phone', value: form.phone }
+            { display_name: 'Phone', variable_name: 'phone', value: form.phone },
+            { display_name: 'Enrollment Number', variable_name: 'enrollment_number', value: form.enrollment_number }
           ]
         },
         callback: async (response) => {
           try {
             await saveMember(response.reference);
-            setForm({ full_name: '', email: '', phone: '', call_to_bar_year: '', practice_area: '', dues_amount: '10000' });
+            setForm({ full_name: '', email: '', phone: '', enrollment_number: '', call_to_bar_year: '', practice_area: '', dues_amount: '10000' });
             setStatus('Payment successful. Your membership has been registered as paid.');
           } catch {
             setStatus('Payment succeeded, but saving your membership failed. Please contact the secretariat with your reference.');
@@ -129,7 +132,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
                 <input
                   id="member-name"
                   value={form.full_name}
-                  onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, full_name: e.target.value })}
                   placeholder="Enter your full name"
                   required
                 />
@@ -139,7 +142,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
                 <input
                   id="member-email"
                   value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, email: e.target.value })}
                   type="email"
                   placeholder="Enter your email"
                   required
@@ -150,8 +153,16 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
             <input
               id="member-phone"
               value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, phone: e.target.value })}
               placeholder="Enter your phone number"
+              required
+            />
+            <label htmlFor="member-enrollment">Enrollment Number</label>
+            <input
+              id="member-enrollment"
+              value={form.enrollment_number}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, enrollment_number: e.target.value })}
+              placeholder="e.g. SCN12345"
               required
             />
             <div className="form-row">
@@ -160,7 +171,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
                 <input
                   id="member-call-year"
                   value={form.call_to_bar_year}
-                  onChange={(e) => setForm({ ...form, call_to_bar_year: e.target.value })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, call_to_bar_year: e.target.value })}
                   placeholder="e.g. 2018"
                 />
               </div>
@@ -169,22 +180,22 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
                 <input
                   id="member-practice"
                   value={form.practice_area}
-                  onChange={(e) => setForm({ ...form, practice_area: e.target.value })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, practice_area: e.target.value })}
                   placeholder="e.g. Litigation"
                 />
               </div>
             </div>
-            <label htmlFor="member-dues">Dues Amount (NGN)</label>
+            <label htmlFor="member-dues">Dues (NGN)</label>
             <input
               id="member-dues"
               value={form.dues_amount}
-              onChange={(e) => setForm({ ...form, dues_amount: e.target.value })}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, dues_amount: e.target.value })}
               inputMode="numeric"
               placeholder="10000"
               required
             />
             <button type="submit" className="mag-btn mag-btn-full" disabled={paying}>
-              <span>{paying ? 'Processing...' : 'Pay Dues & Register'}</span>
+              <span>{paying ? 'Processing...' : 'Register & Pay Dues'}</span>
             </button>
             {status ? <p className={`form-status${status.includes('Unable') || status.includes('not configured') || status.includes('not completed') || status.includes('valid') || status.includes('failed') ? ' error' : ''}`}>{status}</p> : null}
           </form>

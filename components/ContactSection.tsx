@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { supabase } from '@/lib/supabase';
 import SectionHeading from '@/components/SectionHeading';
 import type { SectionHeading as SectionHeadingType } from '@/types/content';
@@ -32,7 +32,7 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
   const [status, setStatus] = useState('');
   const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus('');
 
@@ -83,7 +83,7 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
             <input
               id="contact-name"
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, name: e.target.value })}
               placeholder="Enter your name"
               required
             />
@@ -91,7 +91,7 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
             <input
               id="contact-email"
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, email: e.target.value })}
               type="email"
               placeholder="Enter your email"
               required
@@ -100,7 +100,7 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
             <input
               id="contact-subject"
               value={form.subject}
-              onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, subject: e.target.value })}
               placeholder="What would you like to discuss?"
               required
             />
@@ -108,7 +108,7 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
             <textarea
               id="contact-message"
               value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, message: e.target.value })}
               placeholder="Write your message here"
               rows={5}
               required
