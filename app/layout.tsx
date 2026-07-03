@@ -1,5 +1,6 @@
 import './globals.css';
 import './plbf-site.css';
+import './plbf-admin.css';
 import type { Metadata } from 'next';
 import { Playfair_Display, DM_Sans } from 'next/font/google';
 

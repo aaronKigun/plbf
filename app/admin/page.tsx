@@ -320,29 +320,41 @@ export default function AdminPage() {
   ];
 
   if (authLoading) {
-    return <main className="login-screen"><p className="loading-note">Loading admin...</p></main>;
+    return (
+      <div className="plbf-admin">
+        <div className="admin-noise" aria-hidden="true" />
+        <main className="login-screen"><p className="loading-note">Loading admin...</p></main>
+      </div>
+    );
   }
 
   if (!session) {
     return (
-      <main className="login-screen">
-        <section className="login-box">
-          <img src="/images/Logo.jpg" alt="PLBF logo" className="login-logo" />
-          <h1>Admin Panel</h1>
-          <p className="subtitle">Plateau Lawyers Bar Forum</p>
-          <form onSubmit={signIn}>
-            <input value={loginForm.email} onChange={(event) => setLoginForm({ ...loginForm, email: event.target.value })} type="email" placeholder="Admin email" required />
-            <input value={loginForm.password} onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })} type="password" placeholder="Password" required />
-            <button type="submit">Sign In</button>
-          </form>
-          {loginMessage ? <p className="form-status error">{loginMessage}</p> : null}
-        </section>
-      </main>
+      <div className="plbf-admin">
+        <div className="admin-noise" aria-hidden="true" />
+        <main className="login-screen">
+          <section className="login-box">
+            <div className="login-logo-wrap">
+              <img src="/images/Logo.jpg" alt="PLBF logo" className="login-logo" />
+            </div>
+            <h1>Admin Panel</h1>
+            <p className="subtitle">Plateau Lawyers Bar Forum</p>
+            <form onSubmit={signIn}>
+              <input value={loginForm.email} onChange={(event) => setLoginForm({ ...loginForm, email: event.target.value })} type="email" placeholder="Admin email" required />
+              <input value={loginForm.password} onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })} type="password" placeholder="Password" required />
+              <button type="submit">Sign In</button>
+            </form>
+            {loginMessage ? <p className="form-status error">{loginMessage}</p> : null}
+          </section>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className="admin-shell">
+    <div className="plbf-admin">
+      <div className="admin-noise" aria-hidden="true" />
+      <main className="admin-shell">
       <aside className="admin-sidebar">
         <a className="admin-logo" href="/">
           <img src="/images/Logo.jpg" alt="PLBF logo" />
@@ -594,6 +606,7 @@ export default function AdminPage() {
         </div>
       </div>
     </main>
+    </div>
   );
 }
 
