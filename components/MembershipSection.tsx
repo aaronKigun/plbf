@@ -121,6 +121,7 @@ export default function MembershipSection({ heading }: { heading: SectionHeading
             title={heading.title}
             titleHighlight={heading.title_highlight}
             intro={heading.intro}
+            sectionNum="10"
           />
         </Reveal>
 

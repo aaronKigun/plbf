@@ -13,6 +13,7 @@ import MembershipSection from '@/components/MembershipSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import Reveal from '@/components/Reveal';
+import CustomCursor from '@/components/CustomCursor';
 import { supabase } from '@/lib/supabase';
 import { resolveHeading } from '@/lib/sectionHeadings';
 import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, SectionHeading as SectionHeadingType } from '@/types/content';
@@ -106,6 +107,7 @@ export default function HomePage() {
 
   return (
     <div className="plbf-site">
+      <CustomCursor />
       <div className="noise-overlay" aria-hidden="true" />
       <Navbar />
       <main>

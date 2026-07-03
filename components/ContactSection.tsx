@@ -73,7 +73,7 @@ export default function ContactSection({ heading }: { heading: SectionHeadingTyp
             titleHighlight={heading.title_highlight}
             intro={heading.intro}
             centered={false}
-            sectionNum="10"
+            sectionNum="11"
           />
         </Reveal>
 

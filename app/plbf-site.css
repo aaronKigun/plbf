@@ -20,6 +20,51 @@
   min-height: 100vh;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  cursor: none;
+}
+
+/* Custom cursor */
+.plbf-site .cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+}
+
+.plbf-site .cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.plbf-site .cursor-ring.hover {
+  width: 64px;
+  height: 64px;
+  border-color: var(--accent-light);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.plbf-site a,
+.plbf-site button,
+.plbf-site input,
+.plbf-site textarea,
+.plbf-site select {
+  cursor: none;
 }
 
 .plbf-site *,
@@ -1331,6 +1376,25 @@
   }
 }
 
+@media (max-width: 768px) {
+  .plbf-site {
+    cursor: auto;
+  }
+
+  .plbf-site a,
+  .plbf-site button,
+  .plbf-site input,
+  .plbf-site textarea,
+  .plbf-site select {
+    cursor: pointer;
+  }
+
+  .plbf-site .cursor-dot,
+  .plbf-site .cursor-ring {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .plbf-site .form-row {
     grid-template-columns: 1fr;
@@ -1339,6 +1403,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .plbf-site {
+    cursor: auto;
+  }
+
+  .plbf-site a,
+  .plbf-site button,
+  .plbf-site input,
+  .plbf-site textarea,
+  .plbf-site select {
+    cursor: pointer;
+  }
+
+  .plbf-site .cursor-dot,
+  .plbf-site .cursor-ring {
+    display: none;
+  }
+
   .plbf-site *,
   .plbf-site *::before,
   .plbf-site *::after {
