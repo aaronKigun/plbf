@@ -388,9 +388,22 @@ export default function AdminPage() {
       <div className="admin-main">
         <header className="admin-topbar">
           <span className="admin-page-title">Dashboard</span>
-          <div className="admin-user">
-            <span>{session.user.email}</span>
-            <span className="admin-avatar">{getInitials(session.user.email || 'AD')}</span>
+          <div className="admin-topbar-end">
+            <a href="/" className="admin-mobile-view-site">
+              View Site
+            </a>
+            <button type="button" className="admin-mobile-signout" onClick={signOut} aria-label="Sign out">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span>Sign Out</span>
+            </button>
+            <div className="admin-user">
+              <span>{session.user.email}</span>
+              <span className="admin-avatar">{getInitials(session.user.email || 'AD')}</span>
+            </div>
           </div>
         </header>
 
