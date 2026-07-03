@@ -90,3 +90,9 @@ export type ContactMessage = {
   message: string;
   created_at?: string;
 };
+
+export type NewsletterSubscriber = {
+  id?: number;
+  email: string;
+  created_at?: string;
+};

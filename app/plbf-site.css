@@ -841,20 +841,26 @@
 /* Quote */
 .plbf-site .quote-section {
   position: relative;
-  padding: clamp(3rem, 6vw, 5rem) 0;
+  overflow: hidden;
+  padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+  background: transparent;
+  color: var(--fg);
 }
 
-.plbf-site .quote-bg {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(10, 22, 40, 0.5) 0%, rgba(15, 31, 58, 0.3) 50%, rgba(10, 22, 40, 0.5) 100%);
+.plbf-site .quote-section::before,
+.plbf-site .quote-section::after {
+  display: none;
 }
 
 .plbf-site .quote-inner {
   position: relative;
   z-index: 1;
   text-align: center;
-  padding: 3rem 0;
+  padding: clamp(2rem, 5vw, 3.5rem) 0;
+}
+
+.plbf-site .quote-inner blockquote {
+  color: var(--fg);
 }
 
 .plbf-site .quote-mark {
@@ -1218,6 +1224,23 @@
 .plbf-site .footer-newsletter button:hover {
   background: var(--accent-light);
   transform: translateY(-1px);
+}
+
+.plbf-site .footer-newsletter button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.plbf-site .newsletter-status {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--accent);
+}
+
+.plbf-site .newsletter-status.error {
+  color: #e85d5d;
 }
 
 .plbf-site .footer-divider {

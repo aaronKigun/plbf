@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase, uploadImage, uploadVideo } from '@/lib/supabase';
-import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, Member, ContactMessage } from '@/types/content';
+import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, Member, ContactMessage, NewsletterSubscriber } from '@/types/content';
 
 type FileSetter = (value: (prev: any) => any) => void;
 
@@ -22,6 +22,7 @@ export default function AdminPage() {
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
   const [isNoticeError, setIsNoticeError] = useState(false);
@@ -48,7 +49,7 @@ export default function AdminPage() {
 
   const loadData = async () => {
     setLoading(true);
-    const [trusteesResult, leadersResult, eventsResult, newsResult, galleryResult, videosResult, membersResult, messagesResult] = await Promise.all([
+    const [trusteesResult, leadersResult, eventsResult, newsResult, galleryResult, videosResult, membersResult, messagesResult, subscribersResult] = await Promise.all([
       supabase.from('trustees').select('*').order('display_order', { ascending: true }),
       supabase.from('leaders').select('*').order('display_order', { ascending: true }),
       supabase.from('events').select('*').order('date', { ascending: false }),
@@ -56,7 +57,8 @@ export default function AdminPage() {
       supabase.from('gallery_items').select('*').order('display_order', { ascending: true }),
       supabase.from('videos').select('*').order('display_order', { ascending: true }),
       supabase.from('members').select('*').order('created_at', { ascending: false }),
-      supabase.from('contact_messages').select('*').order('created_at', { ascending: false })
+      supabase.from('contact_messages').select('*').order('created_at', { ascending: false }),
+      supabase.from('newsletter_subscribers').select('*').order('created_at', { ascending: false })
     ]);
 
     setTrustees((trusteesResult.data as Trustee[]) || []);
@@ -67,6 +69,7 @@ export default function AdminPage() {
     setVideos((videosResult.data as VideoItem[]) || []);
     setMembers((membersResult.data as Member[]) || []);
     setMessages((messagesResult.data as ContactMessage[]) || []);
+    setSubscribers((subscribersResult.data as NewsletterSubscriber[]) || []);
     setLoading(false);
   };
 
@@ -316,7 +319,8 @@ export default function AdminPage() {
     { label: 'Trustees', value: trustees.length, icon: 'T' },
     { label: 'News', value: news.length, icon: 'N' },
     { label: 'Members Paid', value: members.filter((member) => member.payment_status === 'paid' || member.status === 'paid').length, icon: 'M' },
-    { label: 'Messages', value: messages.length, icon: '@' }
+    { label: 'Messages', value: messages.length, icon: '@' },
+    { label: 'Newsletter', value: subscribers.length, icon: '✉' }
   ];
 
   if (authLoading) {
@@ -371,6 +375,7 @@ export default function AdminPage() {
           <a href="#admin-videos">Videos</a>
           <a href="#admin-members">Members</a>
           <a href="#admin-messages">Messages</a>
+          <a href="#admin-newsletter">Newsletter</a>
           <a href="#admin-settings">Settings</a>
         </nav>
 
@@ -585,6 +590,18 @@ export default function AdminPage() {
             <section id="admin-messages" className="admin-panel wide">
               <PanelTitle title="Contact Messages" />
               <AdminTable headings={['Name', 'Email', 'Subject', 'Message']} emptyText="No contact messages yet." rows={messages.map((message) => [message.name, message.email, message.subject, message.message])} />
+            </section>
+
+            <section id="admin-newsletter" className="admin-panel wide">
+              <PanelTitle title="Newsletter Subscribers" />
+              <AdminTable
+                headings={['Email', 'Subscribed']}
+                emptyText="No newsletter subscribers yet."
+                rows={subscribers.map((subscriber) => [
+                  subscriber.email,
+                  subscriber.created_at ? new Date(subscriber.created_at).toLocaleDateString() : 'Unknown'
+                ])}
+              />
             </section>
 
             <section id="admin-settings" className="admin-panel wide">

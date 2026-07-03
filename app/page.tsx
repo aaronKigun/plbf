@@ -156,7 +156,6 @@ export default function HomePage() {
         />
 
         <section className="quote-section" aria-label="Guiding principle">
-          <div className="quote-bg" aria-hidden="true" />
           <div className="gold-line" aria-hidden="true" />
           <div className="site-container quote-inner">
             <Reveal>
