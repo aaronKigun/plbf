@@ -226,3 +226,38 @@ create policy "Admins can delete images"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'images');
+
+-- =====================================================================
+-- VIDEO STORAGE
+-- Admin video uploads go to a public storage bucket named "videos".
+-- Run this block in the Supabase SQL editor.
+-- =====================================================================
+
+insert into storage.buckets (id, name, public)
+values ('videos', 'videos', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Public can read videos storage" on storage.objects;
+create policy "Public can read videos storage"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'videos');
+
+drop policy if exists "Admins can upload videos storage" on storage.objects;
+create policy "Admins can upload videos storage"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'videos');
+
+drop policy if exists "Admins can update videos storage" on storage.objects;
+create policy "Admins can update videos storage"
+  on storage.objects for update
+  to authenticated
+  using (bucket_id = 'videos')
+  with check (bucket_id = 'videos');
+
+drop policy if exists "Admins can delete videos storage" on storage.objects;
+create policy "Admins can delete videos storage"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'videos');

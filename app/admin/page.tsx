@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { supabase, uploadImage } from '@/lib/supabase';
+import { supabase, uploadImage, uploadVideo } from '@/lib/supabase';
 import type { Trustee, Leader, EventItem, NewsItem, GalleryItem, VideoItem, Member, ContactMessage } from '@/types/content';
 
 type FileSetter = (value: (prev: any) => any) => void;
@@ -193,6 +193,14 @@ export default function AdminPage() {
 
   const handleVideoSave = async () => {
     showNotice('');
+    if (!videoForm.title.trim()) {
+      showNotice('Please enter a video title.', true);
+      return;
+    }
+    if (!videoForm.url) {
+      showNotice('Please upload a video file before saving.', true);
+      return;
+    }
     const { error } = editingVideoId
       ? await supabase.from('videos').update({ ...videoForm }).eq('id', editingVideoId)
       : await supabase.from('videos').insert([{ ...videoForm, display_order: videos.length + 1 }]);
@@ -216,6 +224,24 @@ export default function AdminPage() {
       showNotice(`${label} deleted successfully.`);
       onDone();
       loadData();
+    }
+  };
+
+  const handleVideoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    showNotice('Uploading video... This may take a moment.');
+    try {
+      const url = await uploadVideo(file, 'uploads');
+      if (!url) {
+        showNotice('Video upload failed. Please try again.', true);
+        return;
+      }
+      setVideoForm((prev) => ({ ...prev, url }));
+      showNotice('Video uploaded. Click Add/Update to save your changes.');
+    } catch (error: any) {
+      showNotice(`Video upload failed: ${error?.message || 'ensure the "videos" storage bucket exists and is public.'}`, true);
+      event.target.value = '';
     }
   };
 
@@ -514,7 +540,11 @@ export default function AdminPage() {
               <div className="panel-body">
                 <div className="admin-form">
                   <Field label="Title" id="video-title"><input id="video-title" value={videoForm.title} onChange={(e) => setVideoForm({ ...videoForm, title: e.target.value })} placeholder="Video title" /></Field>
-                  <Field label="YouTube URL" id="video-url" full><input id="video-url" value={videoForm.url} onChange={(e) => setVideoForm({ ...videoForm, url: e.target.value })} placeholder="https://www.youtube.com/watch?v=..." /></Field>
+                  <Field label="Video File" id="video-file" full>
+                    <input id="video-file" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" onChange={handleVideoUpload} />
+                    <p className="field-hint">MP4, WebM, or MOV — max 100 MB. Upload completes before you click Add/Update.</p>
+                    {videoForm.url ? <p className="field-hint success">Video ready to save.</p> : null}
+                  </Field>
                   <Field label="Description" id="video-description" full><textarea id="video-description" value={videoForm.description} onChange={(e) => setVideoForm({ ...videoForm, description: e.target.value })} placeholder="Short description" /></Field>
                   <div className="form-actions">
                     {editingVideoId ? <button className="btn btn-outline" type="button" onClick={() => { setVideoForm({ title: '', url: '', description: '' }); setEditingVideoId(null); }}>Cancel</button> : null}
@@ -523,9 +553,9 @@ export default function AdminPage() {
                 </div>
               </div>
               <AdminTable
-                headings={['Title', 'URL', 'Description']}
+                headings={['Title', 'File', 'Description']}
                 emptyText="No videos added yet."
-                rows={videos.map((item) => [item.title, item.url, item.description || 'No description'])}
+                rows={videos.map((item) => [item.title, item.url ? 'Uploaded' : 'No file', item.description || 'No description'])}
                 actions={(rowIndex) => (
                   <RowActions
                     onEdit={() => { const item = videos[rowIndex]; setEditingVideoId(item.id!); setVideoForm({ title: item.title, url: item.url, description: item.description || '' }); }}

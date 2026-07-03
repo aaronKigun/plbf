@@ -7,6 +7,10 @@ type VideosSectionProps = {
   heading: SectionHeadingType;
 };
 
+function isYouTubeUrl(url: string) {
+  return /(?:youtube\.com|youtu\.be)/.test(url);
+}
+
 function getEmbedUrl(url: string) {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
   return match ? `https://www.youtube.com/embed/${match[1]}` : url;
@@ -25,12 +29,16 @@ export default function VideosSection({ items, heading }: VideosSectionProps) {
         {items.length ? items.map((item) => (
           <article key={`${item.title}-${item.url}`} className="video-card">
             <div className="video-frame">
-              <iframe
-                src={getEmbedUrl(item.url)}
-                title={item.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              {isYouTubeUrl(item.url) ? (
+                <iframe
+                  src={getEmbedUrl(item.url)}
+                  title={item.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <video src={item.url} controls playsInline preload="metadata" />
+              )}
             </div>
             <div className="video-copy">
               <h3>{item.title}</h3>

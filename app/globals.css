@@ -1412,6 +1412,17 @@ main {
   resize: vertical;
 }
 
+.field-hint {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.field-hint.success {
+  color: var(--gold-dark);
+}
+
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
@@ -1573,12 +1584,18 @@ main {
   background: #111;
 }
 
-.video-frame iframe {
+.video-frame iframe,
+.video-frame video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+.video-frame video {
+  object-fit: contain;
+  background: #111;
 }
 
 .video-copy {
