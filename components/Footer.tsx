@@ -71,9 +71,13 @@ export default function Footer() {
           <div className="footer-newsletter">
             <h4>Newsletter</h4>
             <p>Stay updated with our latest news, events, and legal updates.</p>
-            <form>
+            <form className="newsletter-form">
               <input type="email" placeholder="Your email" aria-label="Email address" />
-              <button type="button" aria-label="Subscribe">Send</button>
+              <button type="button" aria-label="Subscribe">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
             </form>
           </div>
         </div>
