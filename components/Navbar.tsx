@@ -58,19 +58,20 @@ export default function Navbar() {
 
           <button
             type="button"
-            className={`menu-toggle${open ? ' is-open' : ''}`}
+            className={`icon-linescales menu-toggle${open ? ' active' : ''}`}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             onClick={() => setOpen((current) => !current)}
           >
-            <svg className="justice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="12" cy="3.4" r="1.1" />
-              <path d="M12 4.5v15" />
-              <path d="M7.5 19.5h9" />
-              <path d="M4.5 6.2h15" />
-              <path d="M12 4.8 6 6.4M12 4.8l6 1.6" />
-              <path d="M4.5 6.2 2 11.4a2.5 2.5 0 0 0 5 0L4.5 6.2Z" />
-              <path d="M19.5 6.2 17 11.4a2.5 2.5 0 0 0 5 0l-2.5-5.2Z" />
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <line x1="100" y1="58" x2="100" y2="142" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="scale-line-1" />
+              <line x1="78" y1="72" x2="122" y2="72" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="scale-line-2" />
+              <line x1="78" y1="72" x2="72" y2="88" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="scale-line-3" />
+              <line x1="122" y1="72" x2="128" y2="88" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="scale-line-4" />
+              <path d="M66 88 Q72 96 78 88" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="scale-line-5" />
+              <path d="M122 88 Q128 96 134 88" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="scale-line-5" />
+              <line x1="82" y1="82" x2="118" y2="118" stroke="currentColor" strokeWidth="5" strokeLinecap="round" className="x-line-1" />
+              <line x1="118" y1="82" x2="82" y2="118" stroke="currentColor" strokeWidth="5" strokeLinecap="round" className="x-line-2" />
             </svg>
           </button>
         </div>

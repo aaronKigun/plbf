@@ -202,15 +202,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: clamp(1.5rem, 4vw, 3rem);
   height: 5rem;
 }
 
 .plbf-site .nav-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .plbf-site .nav-brand-logo {
@@ -219,12 +220,13 @@
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid rgba(201, 168, 76, 0.3);
+  flex-shrink: 0;
 }
 
 .plbf-site .nav-brand-title {
   display: none;
   font-family: var(--font-display), 'Playfair Display', serif;
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--fg);
@@ -237,6 +239,10 @@
   gap: 1rem;
   flex-wrap: nowrap;
   justify-content: flex-end;
+  flex: 1;
+  margin-left: clamp(2rem, 5vw, 4rem);
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  border-left: 1px solid rgba(201, 168, 76, 0.15);
 }
 
 .plbf-site .nav-link {
@@ -287,28 +293,63 @@
   color: var(--bg);
 }
 
-.plbf-site .menu-toggle {
+/* Line Scales mobile menu icon */
+.plbf-site .icon-linescales {
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
-  border: 1px solid rgba(201, 168, 76, 0.25);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--accent);
   cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.plbf-site .justice-icon {
-  width: 1.35rem;
-  height: 1.35rem;
-  transition: transform 0.5s ease;
+.plbf-site .icon-linescales svg {
+  width: 2rem;
+  height: 2rem;
+  overflow: visible;
 }
 
-.plbf-site .menu-toggle.is-open .justice-icon {
-  transform: rotate(90deg);
+.plbf-site .icon-linescales .scale-line-1,
+.plbf-site .icon-linescales .scale-line-2,
+.plbf-site .icon-linescales .scale-line-3,
+.plbf-site .icon-linescales .scale-line-4,
+.plbf-site .icon-linescales .scale-line-5 {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 0;
+  transition: all 0.55s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.plbf-site .icon-linescales .x-line-1,
+.plbf-site .icon-linescales .x-line-2 {
+  opacity: 0;
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  transition: all 0.55s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0.12s;
+}
+
+.plbf-site .icon-linescales.active .scale-line-1,
+.plbf-site .icon-linescales.active .scale-line-2,
+.plbf-site .icon-linescales.active .scale-line-3,
+.plbf-site .icon-linescales.active .scale-line-4,
+.plbf-site .icon-linescales.active .scale-line-5 {
+  stroke-dashoffset: 60;
+  opacity: 0;
+}
+
+.plbf-site .icon-linescales.active .x-line-1,
+.plbf-site .icon-linescales.active .x-line-2 {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+.plbf-site .icon-linescales:hover svg {
+  filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.35));
 }
 
 .plbf-site .mobile-menu {
@@ -1267,7 +1308,8 @@
     display: flex;
   }
 
-  .plbf-site .menu-toggle {
+  .plbf-site .menu-toggle,
+  .plbf-site .icon-linescales.menu-toggle {
     display: none;
   }
 }
