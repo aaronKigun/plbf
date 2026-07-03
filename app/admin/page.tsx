@@ -222,8 +222,19 @@ export default function AdminPage() {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, setter: FileSetter) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    const url = await uploadImage(file, 'uploads');
-    if (url) setter((prev: any) => ({ ...prev, image: url }));
+    showNotice('Uploading image...');
+    try {
+      const url = await uploadImage(file, 'uploads');
+      if (!url) {
+        showNotice('Image upload failed. Please try again.', true);
+        return;
+      }
+      setter((prev: any) => ({ ...prev, image: url }));
+      showNotice('Image uploaded. Click the Add/Update button to save your changes.');
+    } catch (error: any) {
+      showNotice(`Image upload failed: ${error?.message || 'ensure the "images" storage bucket exists and is public.'}`, true);
+      event.target.value = '';
+    }
   };
 
   const updateAdminEmail = async () => {

@@ -186,3 +186,43 @@ create policy "Public can read news"
 drop policy if exists "Admins can manage news" on news;
 create policy "Admins can manage news"
   on news for all to authenticated using (true) with check (true);
+
+-- =====================================================================
+-- IMAGE STORAGE
+-- Admin image uploads go to a public storage bucket named "images".
+-- Without this bucket + these policies, uploads fail silently and the
+-- site falls back to the hardcoded /images/*.jpg files.
+-- Run this block in the Supabase SQL editor.
+-- =====================================================================
+
+-- Create the public bucket (or make it public if it already exists).
+insert into storage.buckets (id, name, public)
+values ('images', 'images', true)
+on conflict (id) do update set public = true;
+
+-- Anyone can view uploaded images (needed so the public site can load them).
+drop policy if exists "Public can read images" on storage.objects;
+create policy "Public can read images"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'images');
+
+-- Signed-in admins can upload, replace, and delete images.
+drop policy if exists "Admins can upload images" on storage.objects;
+create policy "Admins can upload images"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'images');
+
+drop policy if exists "Admins can update images" on storage.objects;
+create policy "Admins can update images"
+  on storage.objects for update
+  to authenticated
+  using (bucket_id = 'images')
+  with check (bucket_id = 'images');
+
+drop policy if exists "Admins can delete images" on storage.objects;
+create policy "Admins can delete images"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'images');
