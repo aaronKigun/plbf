@@ -19,7 +19,7 @@ export default function GallerySection({ items, heading }: GallerySectionProps) 
             titleHighlight={heading.title_highlight}
             intro={heading.intro}
             centered={false}
-            sectionNum="07"
+            sectionNum="08"
           />
         </Reveal>
 

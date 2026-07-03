@@ -152,7 +152,7 @@ export default function HomePage() {
           intro={heading('programmes').intro}
           items={fallbackProgrammes}
           variant="governance"
-          sectionNum="03"
+          sectionNum="04"
         />
 
         <section className="quote-section" aria-label="Guiding principle">
@@ -198,6 +198,7 @@ export default function HomePage() {
             description: item.bio || 'Community leadership and legal service.'
           }))}
           variant="profile"
+          sectionNum="06"
         />
 
         <SectionGrid
@@ -216,7 +217,7 @@ export default function HomePage() {
             };
           })}
           variant="media"
-          sectionNum="06"
+          sectionNum="07"
         />
 
         <GallerySection items={gallery} heading={heading('gallery')} />

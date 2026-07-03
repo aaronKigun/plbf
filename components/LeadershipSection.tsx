@@ -20,7 +20,7 @@ export default function LeadershipSection({ leaders, heading }: LeadershipSectio
             titleHighlight={heading.title_highlight}
             intro={heading.intro}
             centered={false}
-            sectionNum="04"
+            sectionNum="03"
           />
         </Reveal>
 

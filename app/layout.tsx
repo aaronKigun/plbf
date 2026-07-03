@@ -19,7 +19,12 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: 'Plateau Lawyers Bar Forum',
-  description: 'A modern Next.js TypeScript version of the PLBF website.'
+  description: 'A modern Next.js TypeScript version of the PLBF website.',
+  icons: {
+    icon: '/images/Logo.jpg',
+    shortcut: '/images/Logo.jpg',
+    apple: '/images/Logo.jpg'
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

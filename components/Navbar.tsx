@@ -42,10 +42,7 @@ export default function Navbar() {
         <div className="nav-inner site-container">
           <a href="#hero" className="nav-brand" onClick={closeMenu}>
             <img src="/images/Logo.jpg" alt="PLBF logo" className="nav-brand-logo" />
-            <div className="nav-brand-text">
-              <span className="nav-brand-title">PLBF</span>
-              <span className="nav-brand-sub">Plateau Lawyers</span>
-            </div>
+            <span className="nav-brand-title">Plateau Lawyers Bar Forum</span>
           </a>
 
           <div className="nav-desktop">

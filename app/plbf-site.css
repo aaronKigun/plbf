@@ -219,25 +219,14 @@
   border: 1px solid rgba(201, 168, 76, 0.3);
 }
 
-.plbf-site .nav-brand-text {
-  display: none;
-}
-
 .plbf-site .nav-brand-title {
-  display: block;
+  display: none;
   font-family: var(--font-display), 'Playfair Display', serif;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--fg);
-}
-
-.plbf-site .nav-brand-sub {
-  display: block;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
+  white-space: nowrap;
 }
 
 .plbf-site .nav-desktop {
@@ -1263,8 +1252,8 @@
 }
 
 /* Responsive */
-@media (min-width: 640px) {
-  .plbf-site .nav-brand-text {
+@media (min-width: 480px) {
+  .plbf-site .nav-brand-title {
     display: block;
   }
 }

@@ -28,7 +28,7 @@ export default function VideosSection({ items, heading }: VideosSectionProps) {
             titleHighlight={heading.title_highlight}
             intro={heading.intro}
             centered={false}
-            sectionNum="08"
+            sectionNum="09"
           />
         </Reveal>
 
