@@ -74,7 +74,7 @@ export default function HomePage() {
   ];
 
   const fallbackProgrammes = [
-    { title: 'Legal Aid Outreach', description: 'Community legal support and citizen empowerment.' },
+    { title: 'Legal Aid/Defence of Human Rights', description: 'Giving the Citizens access to justice.' },
     { title: 'Judicial Reform', description: 'Ensuring that the Judiciary remains the last hope of the common man.' },
     { title: 'Professional Development', description: 'Continuing legal education and mentorship.' }
   ];
