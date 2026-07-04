@@ -197,7 +197,7 @@ export default function HomePage() {
             title: item.name,
             subtitle: item.position,
             image: item.image || undefined,
-            description: item.bio || 'Community leadership and legal service.'
+            description: item.bio || ''
           }))}
           variant="profile"
           sectionNum="06"
