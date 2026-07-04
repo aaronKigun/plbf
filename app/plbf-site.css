@@ -1280,3 +1280,363 @@
 .plbf-site .form-status.error {
   color: #e85d5d;
 }
+
+/* Contact layout */
+.plbf-site .contact-section {
+  overflow: hidden;
+}
+
+.plbf-site .contact-orb {
+  width: 600px;
+  height: 600px;
+  bottom: -10rem;
+  left: -10rem;
+}
+
+.plbf-site .contact-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.plbf-site .contact-copy .section-heading {
+  margin-bottom: 0;
+}
+
+.plbf-site .contact-layout .form-card {
+  margin-inline: 0;
+  max-width: none;
+}
+
+/* Footer */
+.plbf-site .site-footer {
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  padding: 4rem 0 2rem;
+  margin-top: 0;
+}
+
+.plbf-site .footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.plbf-site .footer-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.plbf-site .footer-logo {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.plbf-site .footer-about p {
+  color: var(--fg-muted);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin: 0 0 1rem;
+  max-width: 22rem;
+}
+
+.plbf-site .footer-motto {
+  color: rgba(201, 168, 76, 0.75) !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.plbf-site .footer-socials {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.plbf-site .footer-socials .footer-social-link {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  margin-top: 0;
+  flex-shrink: 0;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+.plbf-site .footer-social-link svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.plbf-site .footer-social-link:hover {
+  color: var(--accent);
+  border-color: rgba(201, 168, 76, 0.55);
+  background: rgba(201, 168, 76, 0.08);
+  transform: translateY(-2px);
+}
+
+.plbf-site .site-footer h4 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0 0 1.25rem;
+}
+
+.plbf-site .site-footer a {
+  display: block;
+  color: var(--fg-muted);
+  font-size: 0.875rem;
+  margin-top: 0.6rem;
+  transition: color 0.3s ease;
+}
+
+.plbf-site .site-footer a:hover {
+  color: var(--accent);
+}
+
+.plbf-site .footer-newsletter p {
+  color: var(--fg-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.plbf-site .footer-newsletter form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.plbf-site .footer-newsletter input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(10, 22, 40, 0.6);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  color: var(--fg);
+  transition: border-color 0.3s ease;
+}
+
+.plbf-site .footer-newsletter input::placeholder {
+  color: rgba(139, 157, 195, 0.5);
+}
+
+.plbf-site .footer-newsletter input:focus {
+  outline: none;
+  border-color: rgba(201, 168, 76, 0.5);
+}
+
+.plbf-site .footer-newsletter button {
+  width: 2.75rem;
+  height: auto;
+  align-self: stretch;
+  border-radius: 0.5rem;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.plbf-site .footer-newsletter button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.plbf-site .footer-newsletter button:hover {
+  background: var(--accent-light);
+  transform: translateY(-1px);
+}
+
+.plbf-site .footer-newsletter button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.plbf-site .newsletter-status {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--accent);
+}
+
+.plbf-site .newsletter-status.error {
+  color: #e85d5d;
+}
+
+.plbf-site .footer-divider {
+  margin-bottom: 2rem;
+}
+
+.plbf-site .footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: 0.75rem;
+}
+
+.plbf-site .footer-bottom > div {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+@media (min-width: 480px) {
+  .plbf-site .nav-brand-title {
+    display: block;
+  }
+}
+
+@media (min-width: 1280px) {
+  .plbf-site .nav-desktop {
+    display: flex;
+  }
+
+  .plbf-site .menu-toggle,
+  .plbf-site .icon-linescales.menu-toggle {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .plbf-site .footer-grid {
+    grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(140px, 1fr));
+  }
+
+  .plbf-site .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .plbf-site .contact-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+/* ← FACE FIX: Tablet — 2 columns for grids */
+@media (max-width: 1024px) {
+  .plbf-site .leader-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .plbf-site .profile-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .plbf-site {
+    cursor: auto;
+  }
+
+  .plbf-site a,
+  .plbf-site button,
+  .plbf-site input,
+  .plbf-site textarea,
+  .plbf-site select {
+    cursor: pointer;
+  }
+
+  .plbf-site .cursor-dot,
+  .plbf-site .cursor-ring {
+    display: none;
+  }
+
+  /* Single column on mobile */
+  .plbf-site .leader-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin-inline: auto;
+  }
+
+  .plbf-site .profile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Slightly taller aspect on mobile so more of the body shows */
+  .plbf-site .team-img-wrap {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+@media (max-width: 640px) {
+  .plbf-site .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .plbf-site .profile-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+
+  /* ← FACE FIX: Slightly smaller avatars on small phones */
+  .plbf-site .profile-avatar {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .plbf-site .leader-grid {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plbf-site {
+    cursor: auto;
+  }
+
+  .plbf-site a,
+  .plbf-site button,
+  .plbf-site input,
+  .plbf-site textarea,
+  .plbf-site select {
+    cursor: pointer;
+  }
+
+  .plbf-site .cursor-dot,
+  .plbf-site .cursor-ring {
+    display: none;
+  }
+
+  .plbf-site *,
+  .plbf-site *::before,
+  .plbf-site *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .plbf-site .reveal-up {
+    opacity: 1;
+    transform: none;
+  }
+}
