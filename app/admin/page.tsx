@@ -46,6 +46,8 @@ export default function AdminPage() {
   const [editingNewsId, setEditingNewsId] = useState<number | null>(null);
   const [editingGalleryId, setEditingGalleryId] = useState<number | null>(null);
   const [editingVideoId, setEditingVideoId] = useState<number | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -235,25 +237,31 @@ export default function AdminPage() {
   const handleVideoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    showNotice('Uploading video... This may take a moment.');
+    setUploadingVideo(true);
+    showNotice('Uploading video... this can take a while for large files.');
     try {
       const url = await uploadVideo(file, 'uploads');
       if (!url) {
         showNotice('Video upload failed. Please try again.', true);
         return;
       }
+      console.log('Video uploaded successfully:', url);
       setVideoForm((prev) => ({ ...prev, url }));
-      showNotice('Video uploaded. Click Add/Update to save your changes.');
+      showNotice(`Video ready: ${file.name}. Now click Add/Update to save.`);
     } catch (error: any) {
-      showNotice(`Video upload failed: ${error?.message || 'ensure the "videos" storage bucket exists and is public.'}`, true);
+      console.error('handleVideoUpload error:', error);
+      showNotice(`Video upload failed: ${error?.message || 'unknown error'}`, true);
       event.target.value = '';
+    } finally {
+      setUploadingVideo(false);
     }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, setter: FileSetter) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    showNotice('Uploading image...');
+    setUploadingImage(true);
+    showNotice('Uploading image... please wait until it finishes before saving.');
     try {
       const url = await uploadImage(file, 'uploads');
       if (!url) {
@@ -266,10 +274,13 @@ export default function AdminPage() {
         console.log('Form state after image upload:', updated);
         return updated;
       });
-      showNotice(`✓ Image uploaded: ${url.substring(url.lastIndexOf('/') + 1)}. Now click Add/Update to save.`);
+      showNotice(`✓ Image ready: ${url.substring(url.lastIndexOf('/') + 1)}. Now click Add/Update to save.`);
     } catch (error: any) {
-      showNotice(`Image upload failed: ${error?.message || 'ensure the "images" storage bucket exists and is public.'}`, true);
+      console.error('handleFileUpload error:', error);
+      showNotice(`Image upload failed: ${error?.message || 'unknown error'}`, true);
       event.target.value = '';
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -552,10 +563,19 @@ export default function AdminPage() {
                 <div className="admin-form">
                   <Field label="Title" id="gallery-title"><input id="gallery-title" value={galleryForm.title} onChange={(e) => setGalleryForm({ ...galleryForm, title: e.target.value })} placeholder="Image title" /></Field>
                   <Field label="Caption" id="gallery-caption"><input id="gallery-caption" value={galleryForm.caption} onChange={(e) => setGalleryForm({ ...galleryForm, caption: e.target.value })} placeholder="Optional caption" /></Field>
-                  <Field label="Image" id="gallery-file" full><input id="gallery-file" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setGalleryForm)} /></Field>
+                  <Field label="Image" id="gallery-file" full>
+                    <input id="gallery-file" type="file" accept="image/*" disabled={uploadingImage} onChange={(e) => handleFileUpload(e, setGalleryForm)} />
+                    {uploadingImage ? <p className="field-hint">Uploading… please wait.</p> : null}
+                    {galleryForm.image ? (
+                      <>
+                        <p className="field-hint success">✓ Image ready to save.</p>
+                        <img src={galleryForm.image} alt="Preview" style={{ maxWidth: 200, marginTop: 8, borderRadius: 6 }} />
+                      </>
+                    ) : null}
+                  </Field>
                   <div className="form-actions">
                     {editingGalleryId ? <button className="btn btn-outline" type="button" onClick={() => { setGalleryForm({ title: '', image: '', caption: '' }); setEditingGalleryId(null); }}>Cancel</button> : null}
-                    <button className="btn btn-gold" type="button" onClick={handleGallerySave}>{editingGalleryId ? 'Update Image' : 'Add Image'}</button>
+                    <button className="btn btn-gold" type="button" onClick={handleGallerySave} disabled={uploadingImage}>{uploadingImage ? 'Uploading…' : editingGalleryId ? 'Update Image' : 'Add Image'}</button>
                   </div>
                 </div>
               </div>
@@ -578,14 +598,15 @@ export default function AdminPage() {
                 <div className="admin-form">
                   <Field label="Title" id="video-title"><input id="video-title" value={videoForm.title} onChange={(e) => setVideoForm({ ...videoForm, title: e.target.value })} placeholder="Video title" /></Field>
                   <Field label="Video File" id="video-file" full>
-                    <input id="video-file" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" onChange={handleVideoUpload} />
-                    <p className="field-hint">MP4, WebM, or MOV — max 100 MB. Upload completes before you click Add/Update.</p>
-                    {videoForm.url ? <p className="field-hint success">Video ready to save.</p> : null}
+                    <input id="video-file" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" disabled={uploadingVideo} onChange={handleVideoUpload} />
+                    <p className="field-hint">MP4, WebM, or MOV — max 50 MB. Wait for the upload to finish before clicking Add/Update.</p>
+                    {uploadingVideo ? <p className="field-hint">Uploading… please wait.</p> : null}
+                    {videoForm.url ? <p className="field-hint success">✓ Video ready to save: {videoForm.url.substring(videoForm.url.lastIndexOf('/') + 1)}</p> : null}
                   </Field>
                   <Field label="Description" id="video-description" full><textarea id="video-description" value={videoForm.description} onChange={(e) => setVideoForm({ ...videoForm, description: e.target.value })} placeholder="Short description" /></Field>
                   <div className="form-actions">
                     {editingVideoId ? <button className="btn btn-outline" type="button" onClick={() => { setVideoForm({ title: '', url: '', description: '' }); setEditingVideoId(null); }}>Cancel</button> : null}
-                    <button className="btn btn-gold" type="button" onClick={handleVideoSave}>{editingVideoId ? 'Update Video' : 'Add Video'}</button>
+                    <button className="btn btn-gold" type="button" onClick={handleVideoSave} disabled={uploadingVideo}>{uploadingVideo ? 'Uploading…' : editingVideoId ? 'Update Video' : 'Add Video'}</button>
                   </div>
                 </div>
               </div>
