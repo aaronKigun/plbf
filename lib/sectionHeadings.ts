@@ -5,7 +5,7 @@ export const DEFAULT_SECTION_HEADINGS: Record<string, SectionHeading> = {
     key: 'about',
     eyebrow: 'About Us',
     title: 'Upholding the Integrity of the Legal Profession',
-    intro: 'PLBF is a non-partisan association of legal practitioners indigenous to Plateau State, working to promote professional excellence, legal education, and welfare of members.'
+    intro: 'PLBF is a non-political association of legal practitioners indigenous to Plateau State, working to promote professional excellence, legal education, and welfare of members.'
   },
   governance: {
     key: 'governance',

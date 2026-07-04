@@ -23,7 +23,7 @@ const governanceIcons: Record<string, string> = {
   'Membership Criteria': '◎',
   'Continuing Legal Education': '◆',
   'Committees & Working Groups': '▦',
-  'Annual Report': '▤',
+  'Annual General Meeting': '▤',
 };
 
 function getInitials(name: string): string {
