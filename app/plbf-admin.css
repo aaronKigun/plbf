@@ -738,6 +738,21 @@
   border: 1px solid rgba(201, 168, 76, 0.25);
 }
 
+.plbf-admin .admin-table-image-placeholder {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  background: var(--bg-secondary);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
 .plbf-admin .table-badge {
   display: inline-flex;
   padding: 0.2rem 0.6rem;

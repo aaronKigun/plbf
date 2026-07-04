@@ -661,7 +661,14 @@ function Field({ label, id, full = false, children }: { label: string; id: strin
 }
 
 function AdminImage({ image, name }: { image?: string; name: string }) {
-  return <img className="admin-table-image" src={image || '/images/Logo.jpg'} alt={name} />;
+  if (!image) {
+    return (
+      <div className="admin-table-image-placeholder">
+        {getInitials(name)}
+      </div>
+    );
+  }
+  return <img className="admin-table-image" src={image} alt={name} />;
 }
 
 function AdminTable({ headings, rows, emptyText, badgeColumn, actions }: { headings: string[]; rows: ReactNode[][]; emptyText: string; badgeColumn?: number; actions?: (rowIndex: number) => ReactNode }) {
@@ -698,5 +705,10 @@ function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => 
 }
 
 function getInitials(value: string) {
-  return value.slice(0, 2).toUpperCase();
+  if (!value) return 'PL';
+  const cleanName = value.replace(/(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi, '').trim();
+  const parts = cleanName.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return value.slice(0, 2).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }

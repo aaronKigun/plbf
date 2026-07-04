@@ -62,15 +62,15 @@ export default function HomePage() {
   const heading = (key: string) => resolveHeading(key, sectionHeadings);
 
   const fallbackTrustees = [
-    { name: 'Chief A. B. D. Jang', position: 'Chairman', image: '/images/Logo.jpg', bio: 'Guiding the forum with strategic leadership and legal insight.' },
-    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', image: '/images/Logo.jpg', bio: 'Supporting members and strengthening institutional growth.' },
-    { name: 'Barr. I. S. Dalyop', position: 'Secretary', image: '/images/Logo.jpg', bio: 'Coordinating policy, engagement, and administration.' }
+    { name: 'Chief A. B. D. Jang', position: 'Chairman', image: '', bio: 'Guiding the forum with strategic leadership and legal insight.' },
+    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', image: '', bio: 'Supporting members and strengthening institutional growth.' },
+    { name: 'Barr. I. S. Dalyop', position: 'Secretary', image: '', bio: 'Coordinating policy, engagement, and administration.' }
   ];
 
   const fallbackLeaders = [
-    { name: 'Barr. Chambers C. Dabwan', position: 'Chairman', image: '/images/chairman.png' },
-    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', image: '/images/Logo.jpg' },
-    { name: 'Barr. I. S. Dalyop', position: 'Secretary', image: '/images/Logo.jpg' }
+    { name: 'Barr. Chambers C. Dabwan', position: 'Chairman', image: '' },
+    { name: 'Barr. M. C. Pam', position: 'Vice Chairman', image: '' },
+    { name: 'Barr. I. S. Dalyop', position: 'Secretary', image: '' }
   ];
 
   const fallbackProgrammes = [
@@ -80,15 +80,15 @@ export default function HomePage() {
   ];
 
   const fallbackEvents = [
-    { title: 'Annual General Meeting', date: '12 Aug 2026 - Jos', image: '/images/gavel.jpg', description: 'Conference' },
-    { title: 'Free Legal Clinic', date: '20 Sep 2026 - Bassa', image: '/images/gavel.jpg', description: 'Outreach' },
-    { title: 'Leadership Roundtable', date: '03 Oct 2026 - Abuja', image: '/images/gavel.jpg', description: 'Forum' }
+    { title: 'Annual General Meeting', date: '12 Aug 2026 - Jos', image: '', description: 'Conference' },
+    { title: 'Free Legal Clinic', date: '20 Sep 2026 - Bassa', image: '', description: 'Outreach' },
+    { title: 'Leadership Roundtable', date: '03 Oct 2026 - Abuja', image: '', description: 'Forum' }
   ];
 
   const fallbackNews = [
-    { title: 'PLBF Launches New Membership Drive', category: 'Membership', image: '/images/gavel.jpg', excerpt: 'The forum is welcoming new members to strengthen legal advocacy.' },
-    { title: 'Youth Legal Awareness Programme Announced', category: 'Outreach', image: '/images/gavel.jpg', excerpt: 'A new programme focused on civic education and legal access.' },
-    { title: 'Panel Discussion on Access to Justice', category: 'Event', image: '/images/gavel.jpg', excerpt: 'A forthcoming conversation on building fairer legal systems.' }
+    { title: 'PLBF Launches New Membership Drive', category: 'Membership', image: '', excerpt: 'The forum is welcoming new members to strengthen legal advocacy.' },
+    { title: 'Youth Legal Awareness Programme Announced', category: 'Outreach', image: '', excerpt: 'A new programme focused on civic education and legal access.' },
+    { title: 'Panel Discussion on Access to Justice', category: 'Event', image: '', excerpt: 'A forthcoming conversation on building fairer legal systems.' }
   ];
 
   const governanceItems = [
@@ -180,7 +180,7 @@ export default function HomePage() {
           items={displayEvents.map((item) => ({
             title: item.title,
             subtitle: item.date,
-            image: item.image || '/images/gavel.jpg',
+            image: item.image || undefined,
             description: item.description || 'Upcoming event'
           }))}
           variant="media"
@@ -196,7 +196,7 @@ export default function HomePage() {
           items={displayTrustees.map((item) => ({
             title: item.name,
             subtitle: item.position,
-            image: item.image || '/images/Logo.jpg',
+            image: item.image || undefined,
             description: item.bio || 'Community leadership and legal service.'
           }))}
           variant="profile"
@@ -214,7 +214,7 @@ export default function HomePage() {
             return {
               title: entry.title,
               subtitle: entry.category || 'Update',
-              image: entry.image || '/images/gavel.jpg',
+              image: entry.image || undefined,
               description: entry.excerpt || entry.content || 'Latest updates from PLBF.'
             };
           })}

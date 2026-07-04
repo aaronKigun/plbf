@@ -763,8 +763,26 @@
   transition: border-color 0.5s ease;
 }
 
+.plbf-site .initials-avatar {
+  background: var(--bg-secondary);
+  border: 2px solid rgba(201, 168, 76, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+  transition: all 0.5s ease;
+}
+
 .plbf-site .glass-card:hover .profile-avatar {
   border-color: rgba(201, 168, 76, 0.5);
+}
+
+.plbf-site .glass-card:hover .initials-avatar {
+  background: rgba(201, 168, 76, 0.05);
+  color: var(--accent-light);
 }
 
 .plbf-site .profile-avatar img {
@@ -875,6 +893,26 @@
   position: relative;
   height: 280px;
   overflow: hidden;
+}
+
+.plbf-site .team-img-wrap-initials {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 3rem;
+  letter-spacing: 0.05em;
+  transition: all 0.5s ease;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+.plbf-site .glass-card:hover .team-img-wrap-initials {
+  background: rgba(201, 168, 76, 0.05);
+  color: var(--accent-light);
 }
 
 .plbf-site .team-img-wrap::after {

@@ -66,9 +66,15 @@ export default function SectionGrid({
                 </>
               ) : variant === 'profile' ? (
                 <>
-                  <div className="profile-avatar">
-                    <img src={item.image || '/images/Logo.jpg'} alt={item.title} />
-                  </div>
+                  {item.image ? (
+                    <div className="profile-avatar">
+                      <img src={item.image} alt={item.title} />
+                    </div>
+                  ) : (
+                    <div className="profile-avatar initials-avatar">
+                      <span>{getInitials(item.title)}</span>
+                    </div>
+                  )}
                   {item.subtitle ? <span className="pill pill-sm">{item.subtitle}</span> : null}
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
@@ -106,4 +112,13 @@ export default function SectionGrid({
       </div>
     </section>
   );
+}
+
+function getInitials(name: string) {
+  if (!name) return 'PL';
+  const cleanName = name.replace(/(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi, '').trim();
+  const parts = cleanName.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return name.slice(0, 2).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }

@@ -28,7 +28,13 @@ export default function LeadershipSection({ leaders, heading }: LeadershipSectio
           {leaders.map((leader) => (
             <Reveal key={`${leader.name}-${leader.position}`} as="article" className="glass-card leader-card">
               <div className="team-img-wrap">
-                <img src={leader.image || '/images/Logo.jpg'} alt={leader.name} loading="lazy" />
+                {leader.image ? (
+                  <img src={leader.image} alt={leader.name} loading="lazy" />
+                ) : (
+                  <div className="team-img-wrap-initials">
+                    <span>{getInitials(leader.name)}</span>
+                  </div>
+                )}
                 <span className="pill pill-sm team-role">{leader.position}</span>
               </div>
               <div className="leader-info">
@@ -41,4 +47,13 @@ export default function LeadershipSection({ leaders, heading }: LeadershipSectio
       </div>
     </section>
   );
+}
+
+function getInitials(name: string) {
+  if (!name) return 'PL';
+  const cleanName = name.replace(/(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi, '').trim();
+  const parts = cleanName.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return name.slice(0, 2).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
