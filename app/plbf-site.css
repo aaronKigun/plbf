@@ -402,15 +402,24 @@
   inset: 0;
   background: rgba(6, 13, 26, 0.97);
   backdrop-filter: blur(30px);
-  z-index: 5500;
+  -webkit-backdrop-filter: blur(30px);
+  /* z-index bumped ABOVE nav-glass (6000) so links are never hidden behind the bar */
+  z-index: 6500;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* Use flex-start + top padding so links start BELOW the nav bar
+     instead of centering behind it on short screens (iPhone SE) */
+  justify-content: flex-start;
   gap: 1.5rem;
   transform: translateX(100%);
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  padding: 2rem;
+  /* padding-top clears the 5rem nav bar + breathing room */
+  padding: 7rem 2rem 2rem;
+  /* Use 100dvh where supported so iOS Safari dynamic URL bar doesn't clip links */
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
 }
 
 .plbf-site .mobile-menu.open {
@@ -422,10 +431,37 @@
   font-size: clamp(1.5rem, 5vw, 2rem);
   color: var(--fg);
   transition: color 0.3s ease;
+  /* Make sure links are tappable and visible */
+  display: block;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  /* Safety net — guarantee visibility when menu is open */
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
-.plbf-site .mobile-nav-link:hover {
+.plbf-site .mobile-nav-link:hover,
+.plbf-site .mobile-nav-link:active {
   color: var(--accent);
+}
+
+/* Ensure the Become a Member CTA inside the mobile menu is also visible */
+.plbf-site .mobile-menu .mag-btn {
+  margin-top: 1rem;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Make sure the hamburger is visible on mobile — never accidentally hidden */
+@media (max-width: 1279px) {
+  .plbf-site .menu-toggle,
+  .plbf-site .icon-linescales.menu-toggle {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 }
 
 /* Hero */
