@@ -956,7 +956,7 @@
    so the crop never changes ratio. */
 .plbf-site .team-img-wrap {
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bg-secondary);
   flex-shrink: 0;
@@ -1581,9 +1581,9 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Slightly taller aspect on mobile so more of the body shows */
+    /* Shorter on mobile — face still visible via object-position: center 20% */
   .plbf-site .team-img-wrap {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
   }
 }
 
