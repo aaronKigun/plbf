@@ -5,7 +5,12 @@ type SectionGridProps = {
   id?: string;
   title: string;
   titleHighlight?: string;
-  items: Array<{ title: string; description: string; subtitle?: string; image?: string }>;
+  items: Array<{
+    title: string;
+    description: string;
+    subtitle?: string;
+    image?: string;
+  }>;
   eyebrow?: string;
   intro?: string;
   variant?: 'default' | 'profile' | 'media' | 'governance';
@@ -18,8 +23,20 @@ const governanceIcons: Record<string, string> = {
   'Membership Criteria': '◎',
   'Continuing Legal Education': '◆',
   'Committees & Working Groups': '▦',
-  'Annual Report': '▤'
+  'Annual Report': '▤',
 };
+
+function getInitials(name: string): string {
+  if (!name) return 'PL';
+  const cleanName = name.replace(
+    /(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi,
+    ''
+  ).trim();
+  const parts = cleanName.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return name.slice(0, 2).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
 export default function SectionGrid({
   id,
@@ -29,7 +46,7 @@ export default function SectionGrid({
   eyebrow,
   intro,
   variant = 'default',
-  sectionNum
+  sectionNum,
 }: SectionGridProps) {
   const gridClass =
     variant === 'profile'
@@ -55,7 +72,11 @@ export default function SectionGrid({
 
         <div className={gridClass}>
           {items.map((item) => (
-            <Reveal key={item.title} as="article" className={`glass-card card-${variant}`}>
+            <Reveal
+              key={item.title}
+              as="article"
+              className={`glass-card card-${variant}`}
+            >
               {variant === 'governance' ? (
                 <>
                   <div className="gov-icon-area" aria-hidden="true">
@@ -75,7 +96,9 @@ export default function SectionGrid({
                       <span>{getInitials(item.title)}</span>
                     </div>
                   )}
-                  {item.subtitle ? <span className="pill pill-sm">{item.subtitle}</span> : null}
+                  {item.subtitle ? (
+                    <span className="profile-role">{item.subtitle}</span>
+                  ) : null}
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
                 </>
@@ -84,7 +107,9 @@ export default function SectionGrid({
                   {item.image ? (
                     <div className="media-image">
                       <img src={item.image} alt={item.title} loading="lazy" />
-                      {item.subtitle ? <span className="media-badge">{item.subtitle}</span> : null}
+                      {item.subtitle ? (
+                        <span className="media-badge">{item.subtitle}</span>
+                      ) : null}
                     </div>
                   ) : null}
                   <div className="media-body">
@@ -100,7 +125,9 @@ export default function SectionGrid({
                     </div>
                   ) : null}
                   <div className="media-body">
-                    {item.subtitle ? <p className="card-eyebrow">{item.subtitle}</p> : null}
+                    {item.subtitle ? (
+                      <p className="card-eyebrow">{item.subtitle}</p>
+                    ) : null}
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                   </div>
@@ -112,13 +139,4 @@ export default function SectionGrid({
       </div>
     </section>
   );
-}
-
-function getInitials(name: string) {
-  if (!name) return 'PL';
-  const cleanName = name.replace(/(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi, '').trim();
-  const parts = cleanName.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return name.slice(0, 2).toUpperCase();
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }

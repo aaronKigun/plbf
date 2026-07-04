@@ -8,6 +8,18 @@ type LeadershipSectionProps = {
   heading: SectionHeadingType;
 };
 
+function getInitials(name: string): string {
+  if (!name) return 'PL';
+  const cleanName = name.replace(
+    /(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi,
+    ''
+  ).trim();
+  const parts = cleanName.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return name.slice(0, 2).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 export default function LeadershipSection({ leaders, heading }: LeadershipSectionProps) {
   return (
     <section id="executives" className="site-section section-leadership">
@@ -26,16 +38,24 @@ export default function LeadershipSection({ leaders, heading }: LeadershipSectio
 
         <div className="leader-grid">
           {leaders.map((leader) => (
-            <Reveal key={`${leader.name}-${leader.position}`} as="article" className="glass-card leader-card">
+            <Reveal
+              key={`${leader.name}-${leader.position}`}
+              as="article"
+              className="glass-card leader-card"
+            >
               <div className="team-img-wrap">
                 {leader.image ? (
-                  <img src={leader.image} alt={leader.name} loading="lazy" />
+                  <img
+                    src={leader.image}
+                    alt={leader.name}
+                    loading="lazy"
+                  />
                 ) : (
                   <div className="team-img-wrap-initials">
                     <span>{getInitials(leader.name)}</span>
                   </div>
                 )}
-                <span className="pill pill-sm team-role">{leader.position}</span>
+                <span className="team-role">{leader.position}</span>
               </div>
               <div className="leader-info">
                 <h3>{leader.name}</h3>
@@ -47,13 +67,4 @@ export default function LeadershipSection({ leaders, heading }: LeadershipSectio
       </div>
     </section>
   );
-}
-
-function getInitials(name: string) {
-  if (!name) return 'PL';
-  const cleanName = name.replace(/(Barr\.|Chief|Esq\.|Mrs\.|Mr\.|Dr\.)/gi, '').trim();
-  const parts = cleanName.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return name.slice(0, 2).toUpperCase();
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
