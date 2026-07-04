@@ -38,8 +38,8 @@ export default function HomePage() {
         { data: videosData },
         { data: headingsData }
       ] = await Promise.all([
-        supabase.from('trustees').select('*').order('display_order', { ascending: true }).limit(6),
-        supabase.from('leaders').select('*').order('display_order', { ascending: true }).limit(6),
+        supabase.from('trustees').select('*').order('display_order', { ascending: true }),
+        supabase.from('leaders').select('*').order('display_order', { ascending: true }),
         supabase.from('events').select('*').order('date', { ascending: false }).limit(6),
         supabase.from('news').select('*').order('date', { ascending: false }).limit(6),
         supabase.from('gallery_items').select('*').order('display_order', { ascending: true }).limit(12),
